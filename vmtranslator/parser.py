@@ -13,7 +13,7 @@ class Parser:
 
     def __init__(self, vm_file):
         file = open(vm_file, 'r')
-        self._lines = file.readlines()
+        self._lines = self._clean_lines(file.readlines())
         self._curr_line = 0
         self._reset()
 
@@ -24,8 +24,8 @@ class Parser:
     def _clean_lines(self, lines):
         clean_lines = []
         for line in lines:
-            if not(self._line_empty(line) and self._line_comment(line)):
-                clean_lines.append(line.split())
+            if not self._line_empty(line) and not self._line_comment(line):
+                clean_lines.append(line.replace('\n', ''))
         return clean_lines
 
     def _line_empty(self, line):
@@ -54,11 +54,12 @@ class Parser:
         return self._curr_cmd_type
 
     def arg1(self):
-        args = self._curr_line.split('')
+        args = self._curr_line.split(' ')
         if self._curr_cmd_type == 'C_ARITHMETIC':
             return args[0]
         else:
+            print(args)
             return args[1]
     
     def arg2(self):
-        return self._curr_line.split('')[2]
+        return self._curr_line.split(' ')[2]

@@ -1,5 +1,3 @@
-from curses.ascii import SP
-
 class CodeWriter:
     # 0 stands for unary, 1 stands for binary operation
     _operations = {
@@ -20,7 +18,7 @@ class CodeWriter:
         'this': 'THIS',
         'that': 'THAT',
         'temp': 'TEMP',
-    } 
+    }
 
     def __init__(self, asm_file):
         self._file = open(asm_file, 'w')
@@ -37,8 +35,8 @@ class CodeWriter:
             'A = M\n'+\
             'M = M ' + operator + ' D\n'+\
             '@SP\n'+\
-            'M = M + 1' # increment SP to empty space
-    
+            'M = M + 1\n' # increment SP to empty space
+
     def _unaryOperation(self, operator):
         return \
             '// Unary operation: ' + operator + '\n'+\
@@ -47,14 +45,14 @@ class CodeWriter:
             'A = M\n'+\
             'M = ' + operator + ' M\n'+\
             '@SP\n'+\
-            'M = M + 1' # increment SP to empty space
-        
+            'M = M + 1\n' # increment SP to empty space
+
     def writeArithmetic(self, cmd):
         operator = self._operations[cmd][0]
         if not self._operations[cmd][1]:
-            self._unaryOperation(operator)
+            self._file.write(self._unaryOperation(operator))
         else:
-            self._binaryOperation(operator)
+            self._file.write(self._binaryOperation(operator))
 
     def _writePush(self, sgmt, id):
         sgmt_symbol = self._segments[sgmt]
@@ -70,8 +68,8 @@ class CodeWriter:
             'A = M\n'+\
             'M = D\n'+\
             '@SP\n'+\
-            'M = M + 1' # increment SP to empty space
-    
+            'M = M + 1\n' # increment SP to empty space
+
     def _writePop(self, sgmt, id):
         sgmt_symbol = self._segments[sgmt]
         return \
@@ -84,14 +82,32 @@ class CodeWriter:
             'A = M\n'+\
             '@' + id + '\n'+\
             'A = A + D\n'+\
-            'M = D'
+            'M = D\n'
 
+    def _writePushConstant(self, constant):
+        return \
+            '// Push constant' + constant + ' to stack\n' +\
+            '@'+ constant +'\n'+\
+            'D = A\n' +\
+            '@SP\n' +\
+            'A = M\n' +\
+            'M = D\n' +\
+            '@SP\n' +\
+            'M = M + 1\n'
     
     def writePushPop(self, cmd, sgmt, id):
         if cmd == 'C_PUSH':
-            if (sgmt == 'static'):
-                self._writePush(self, )
+            if sgmt == 'constant':
+                self._file.write(self._writePushConstant(id))
             else:
-            self._writePush(self, sgmt, id)
+                self._file.write(self._writePush(sgmt, id))
         elif cmd == 'C_POP':
-            self._writePop(self, sgmt, id)
+            self._file.write(self._writePop(sgmt, id))
+
+    def appendInfinite(self):
+        infiniteLoop = \
+            '(END)\n' + \
+            '@END\n' + \
+            '0; JMP\n'
+        self._file.write(infiniteLoop)
+        self._file.close()

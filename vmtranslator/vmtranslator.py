@@ -4,7 +4,7 @@ from codewriter import CodeWriter
 
 class VMTranslator:
     def __init__(self, file):
-        self._pass_1(file)
+        self._translate(file)
 
     def _to_asm_file(self,  vm_file):
         return vm_file.replace('.vm', '.asm')
@@ -13,20 +13,16 @@ class VMTranslator:
         parser = Parser(file)
         codeWriter = CodeWriter(self._to_asm_file(file))
         while parser.hasMoreLines():
-            parser.advance(file)
+            parser.advance()
             cmdType = parser.commandType()
             if cmdType != 'C_RETURN':
-
-                
-
-    def _pass_2(self, vm_file, asm_file):
-        parser = Parser(vm_file)
-        code_writer = CodeWriter(asm_file)
-
-        # -> append infinity loop
-        # (END)
-        # @END
-        # 0; JMP
+                arg1 = parser.arg1()
+                if cmdType in {'C_PUSH','C_POP', 'C_FUNCTION', 'C_CALL'}:
+                    arg2 = parser.arg2()
+                    codeWriter.writePushPop(cmdType, arg1, arg2)
+                else:
+                    codeWriter.writeArithmetic(arg1)
+        codeWriter.appendInfinite()
 
 if __name__ == '__main__':
     vm_file = sys.argv[1]
