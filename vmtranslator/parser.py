@@ -58,7 +58,6 @@ class Parser:
         if self._curr_cmd_type == 'C_ARITHMETIC':
             return args[0]
         else:
-            print(args)
             return args[1]
     
     def arg2(self):

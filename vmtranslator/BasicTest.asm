@@ -1,4 +1,4 @@
-// Push constant10 to stack
+// Push constant 10 to stack
 @10
 D = A
 @SP
@@ -6,17 +6,22 @@ A = M
 M = D
 @SP
 M = M + 1
-// Pop stack into localat index0
-@SP
-M = M - 1
-A = M
-D = M
+// Pop stack into local at index: 0
 @LCL
 A = M
+D = A
 @0
-A = A + D
+A = A+D
+D = A
+@R13
 M = D
-// Push constant21 to stack
+@SP
+AM = M - 1
+D = M
+@R13
+A = M
+M = D
+// Push constant 21 to stack
 @21
 D = A
 @SP
@@ -24,7 +29,7 @@ A = M
 M = D
 @SP
 M = M + 1
-// Push constant22 to stack
+// Push constant 22 to stack
 @22
 D = A
 @SP
@@ -32,27 +37,37 @@ A = M
 M = D
 @SP
 M = M + 1
-// Pop stack into argumentat index2
-@SP
-M = M - 1
-A = M
-D = M
+// Pop stack into argument at index: 2
 @ARG
 A = M
+D = A
 @2
-A = A + D
+A = A+D
+D = A
+@R13
 M = D
-// Pop stack into argumentat index1
 @SP
-M = M - 1
-A = M
+AM = M - 1
 D = M
+@R13
+A = M
+M = D
+// Pop stack into argument at index: 1
 @ARG
 A = M
+D = A
 @1
-A = A + D
+A = A+D
+D = A
+@R13
 M = D
-// Push constant36 to stack
+@SP
+AM = M - 1
+D = M
+@R13
+A = M
+M = D
+// Push constant 36 to stack
 @36
 D = A
 @SP
@@ -60,17 +75,22 @@ A = M
 M = D
 @SP
 M = M + 1
-// Pop stack into thisat index6
-@SP
-M = M - 1
-A = M
-D = M
+// Pop stack into this at index: 6
 @THIS
 A = M
+D = A
 @6
-A = A + D
+A = A+D
+D = A
+@R13
 M = D
-// Push constant42 to stack
+@SP
+AM = M - 1
+D = M
+@R13
+A = M
+M = D
+// Push constant 42 to stack
 @42
 D = A
 @SP
@@ -78,7 +98,7 @@ A = M
 M = D
 @SP
 M = M + 1
-// Push constant45 to stack
+// Push constant 45 to stack
 @45
 D = A
 @SP
@@ -86,27 +106,37 @@ A = M
 M = D
 @SP
 M = M + 1
-// Pop stack into thatat index5
-@SP
-M = M - 1
-A = M
-D = M
+// Pop stack into that at index: 5
 @THAT
 A = M
+D = A
 @5
-A = A + D
+A = A+D
+D = A
+@R13
 M = D
-// Pop stack into thatat index2
 @SP
-M = M - 1
-A = M
+AM = M - 1
 D = M
+@R13
+A = M
+M = D
+// Pop stack into that at index: 2
 @THAT
 A = M
+D = A
 @2
-A = A + D
+A = A+D
+D = A
+@R13
 M = D
-// Push constant510 to stack
+@SP
+AM = M - 1
+D = M
+@R13
+A = M
+M = D
+// Push constant 510 to stack
 @510
 D = A
 @SP
@@ -114,15 +144,20 @@ A = M
 M = D
 @SP
 M = M + 1
-// Pop stack into tempat index6
-@SP
-M = M - 1
-A = M
-D = M
+// Pop stack into temp at index: 6
 @TEMP
 A = M
+D = A
 @6
-A = A + D
+A = A+D
+D = A
+@R13
+M = D
+@SP
+AM = M - 1
+D = M
+@R13
+A = M
 M = D
 // Push into stack from local at index: 0 
 @0

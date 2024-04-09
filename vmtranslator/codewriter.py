@@ -73,20 +73,25 @@ class CodeWriter:
     def _writePop(self, sgmt, id):
         sgmt_symbol = self._segments[sgmt]
         return \
-            '// Pop stack into '+ sgmt + 'at index' + id + '\n'+\
-            '@SP\n'+\
-            'M = M - 1\n'+\
-            'A = M\n'+\
-            'D = M\n'+\
+            '// Pop stack into '+ sgmt + ' at index: ' + id + '\n'+\
             '@' + sgmt_symbol + '\n'+\
             'A = M\n'+\
-            '@' + id + '\n'+\
-            'A = A + D\n'+\
+            'D = A\n'+\
+            '@'+ id +'\n'+\
+            'A = A+D\n'+\
+            'D = A\n'+\
+            '@R13\n'+\
+            'M = D\n'+\
+            '@SP\n'+\
+            'AM = M - 1\n'+\
+            'D = M\n'+\
+            '@R13\n'+\
+            'A = M\n'+\
             'M = D\n'
 
     def _writePushConstant(self, constant):
         return \
-            '// Push constant' + constant + ' to stack\n' +\
+            '// Push constant ' + constant + ' to stack\n' +\
             '@'+ constant +'\n'+\
             'D = A\n' +\
             '@SP\n' +\
