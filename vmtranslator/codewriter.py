@@ -34,7 +34,7 @@ class CodeWriter:
                 line_count += 1
         return line_count
 
-    def _binaryOperation(self, operator):
+    def _getBinaryOperation(self, operator):
         return \
             '// Binary operation: ' + operator + '\n'+\
             '@SP\n'+\
@@ -48,7 +48,7 @@ class CodeWriter:
             '@SP\n'+\
             'M = M + 1\n' # increment SP to empty space
 
-    def _unaryOperation(self, operator):
+    def _getUnaryOperation(self, operator):
         return \
             '// Unary operation: ' + operator + '\n'+\
             '@SP\n'+\
@@ -60,78 +60,92 @@ class CodeWriter:
 
     def _writePush(self, sgmt, id):
         sgmt_symbol = self._segments[sgmt]
-        return \
-            '// Push into stack from '+ sgmt +' at index: ' + id + ' \n'+\
-            '@'+ id +'\n'+\
-            'D = A\n'+\
-            '@'+ sgmt_symbol +'\n'+\
-            'A = M\n'+\
-            'A = A + D\n'+\
-            'D = M\n'+\
-            '@SP\n'+\
-            'A = M\n'+\
-            'M = D\n'+\
-            '@SP\n'+\
+        self._file.write(
+            '// Push into stack from '+ sgmt +' at index: ' + id + ' \n'+
+            '@'+ id +'\n'+
+            'D = A\n'+
+            '@'+ sgmt_symbol +'\n'+
+            'A = M\n'+
+            'A = A + D\n'+
+            'D = M\n'+
+            '@SP\n'+
+            'A = M\n'+
+            'M = D\n'+
+            '@SP\n'+
             'M = M + 1\n' # increment SP to empty space
+        )
+
 
     def _writePop(self, sgmt, id):
         sgmt_symbol = self._segments[sgmt]
-        return \
-            '// Pop stack into '+ sgmt + ' at index: ' + id + '\n'+\
-            '@' + sgmt_symbol + '\n'+\
-            'A = M\n'+\
-            'D = A\n'+\
-            '@'+ id +'\n'+\
-            'A = A+D\n'+\
-            'D = A\n'+\
-            '@R13\n'+\
-            'M = D\n'+\
-            '@SP\n'+\
-            'AM = M - 1\n'+\
-            'D = M\n'+\
-            '@R13\n'+\
-            'A = M\n'+\
+        self._file.write(
+            '// Pop stack into '+ sgmt + ' at index: ' + id + '\n'+
+            '@' + sgmt_symbol + '\n'+
+            'A = M\n'+
+            'D = A\n'+
+            '@'+ id +'\n'+
+            'A = A+D\n'+
+            'D = A\n'+
+            '@R13\n'+
+            'M = D\n'+
+            '@SP\n'+
+            'AM = M - 1\n'+
+            'D = M\n'+
+            '@R13\n'+
+            'A = M\n'+
             'M = D\n'
+        )
+
 
     def _writePushConstant(self, constant):
-        return \
-            '// Push constant ' + constant + ' to stack\n' +\
-            '@'+ constant +'\n'+\
-            'D = A\n' +\
-            '@SP\n' +\
-            'A = M\n' +\
-            'M = D\n' +\
-            '@SP\n' +\
-            'M = M + 1\n'
-    
-    def _writePushSegment(self, sgmt_symbol):
         self._file.write(
-            '@' + sgmt_symbol + '\n' +
-            'D = M\n' +
+            '// Push constant ' + constant + ' to stack\n' +
+            '@'+ constant +'\n'+
+            'D = A\n' +
             '@SP\n' +
-            'A=M\n' +
-            'M=D\n' +
+            'A = M\n' +
+            'M = D\n' +
             '@SP\n' +
-            'M=M+1\n'
+            'M = M + 1\n'
         )
+    
+    def _getPushSegment(self, sgmt_symbol):
+        return \
+            '// Push segment ' + sgmt_symbol + ' to stack\n'+\
+            '@' + sgmt_symbol + '\n' +\
+            'D = M\n' +\
+            '@SP\n' +\
+            'A=M\n' +\
+            'M=D\n' +\
+            '@SP\n' +\
+            'M=M+1\n'
+
+    def _getRestoreSegment(self, sgmt_symbol):
+        return \
+            '// Restore segment ' + sgmt_symbol + ' from caller (R13)\n'+\
+            '@R13\n' +\
+            'AM=M-1\n' +\
+            'D=M\n' +\
+            '@'+ sgmt_symbol +'\n' +\
+            'M=D\n'
 
     def writeArithmetic(self, cmd):
         operator = self._operations[cmd][0]
         if not self._operations[cmd][1]:
-            self._file.write(self._unaryOperation(operator))
+            self._file.write(self._getUnaryOperation(operator))
         else:
-            self._file.write(self._binaryOperation(operator))
+            self._file.write(self._getBinaryOperation(operator))
 
     def writePushPop(self, cmd, sgmt, id):
         if cmd == 'C_PUSH':
             if sgmt == 'constant':
-                self._file.write(self._writePushConstant(id))
+                self._writePushConstant(id)
             else:
-                self._file.write(self._writePush(sgmt, id))
+                self._writePush(sgmt, id)
         elif cmd == 'C_POP':
-            self._file.write(self._writePop(sgmt, id))
+            self._writePop(sgmt, id)
 
-    def writeLabel(label):
+    def writeLabel(self, label):
         self._file.write(
             '// label: ' + label + '\n' +
             '(' + label + ')\n'
@@ -139,7 +153,7 @@ class CodeWriter:
         # SAVE NEW LABEL TO SYMBOL TABLE OF CURRENT FUNCTION
         self._symbolTable[self._currFunction][label] = self._getCurrLine()
 
-    def writeGoto(label):
+    def writeGoto(self, label):
         # CHECK IF LABEL IS IN CURRENT FUNCTION
         if label in self._symbolTable[self._currFunction]:
             self._file.write(
@@ -148,7 +162,7 @@ class CodeWriter:
                 '0; JMP\n'
             )
     
-    def writeIf(label):
+    def writeIf(self, label):
         # CHECK IF LABEL IS IN CURRENT FUNCTION
         if label in self._symbolTable[self._currFunction]:
             self._file.write(
@@ -161,7 +175,7 @@ class CodeWriter:
                 'D;JNE\n'
             )
 
-    def writeFunction(funcName, nVars):
+    def writeFunction(self, funcName, nVars):
         # SAVE CURRENT FUNCTION IN SYMBOL TABLE
         self._symbolTable.update(funcName)
         self._file.write(
@@ -177,49 +191,19 @@ class CodeWriter:
             '(' + function_name + ')\n'
         )
     
-    def writeCall(funcName, nArgs):
+    def writeCall(self, funcName, nArgs):
         self._file.write(
             '// Call function\n' +
             # push return address
-            '@RETURN_ADDRESS_' + call_index + '\n' +    
-            'D=A\n' +
-            '@SP\n' +
-            'A=M\n' +
-            'M=D\n' +
-            '@SP\n' +
-            'M=M+1\n' +
+            self._getPushSegment('rAdd') +
             # push LCL
-            '@LCL\n' +                                  
-            'D=M\n' +
-            '@SP\n' +
-            'A=M\n' +
-            'M=D\n' +
-            '@SP\n' +
-            'M=M+1\n' +
+            self._getPushSegment('LCL') +
             # push ARG
-            '@ARG\n' +                                 
-            'D=M\n' +
-            '@SP\n' +
-            'A=M\n' +
-            'M=D\n' +
-            '@SP\n' +
-            'M=M+1\n' +
+            self._getPushSegment('ARG') +
             # push THIS
-            '@THIS\n' +                                 
-            'D=M\n' +
-            '@SP\n' +
-            'A=M\n' +
-            'M=D\n' +
-            '@SP\n' +
-            'M=M+1\n' +
+            self._getPushSegment('THIS') +
             # push THAT
-            '@THAT\n' +                                 
-            'D=M\n' +
-            '@SP\n' +
-            'A=M\n' +
-            'M=D\n' +
-            '@SP\n' +
-            'M=M+1\n' +
+            self._getPushSegment('THAT') +
             # set ARG for callee
             '@SP\n' +                                   
             'D=M\n' +
@@ -241,7 +225,7 @@ class CodeWriter:
             '(RETURN_ADDRESS_' + call_index + ')\n'     
         )
     
-    def writeReturn():
+    def writeReturn(self):
         self._file.write(
             '// Write return\n' +
             # store LCL to R13
@@ -262,35 +246,19 @@ class CodeWriter:
             '@ARG\n' +
             'A=M\n' +
             'M=D\n' +
-            # restore SP of caller
+            # restore SP of ARG
             '@ARG\n' +
             'D=M+1\n' +
             '@SP\n' +
             'M=D\n' +
             # restore THAT of caller
-            '@R13\n' +
-            'AM=M-1\n' +
-            'D=M\n' +
-            '@THAT\n' +
-            'M=D\n' +
+            self._getRestoreSegment('THAT') +
             # restore THIS of caller
-            '@R13\n' +
-            'AM=M-1\n' +
-            'D=M\n' +
-            '@THIS\n' +
-            'M=D\n' +
+            self._getRestoreSegment('THIS') +
             # restore ARG of caller
-            '@R13\n' +
-            'AM=M-1\n' +
-            'D=M\n' +
-            '@ARG\n' +
-            'M=D\n' +
+            self._getRestoreSegment('ARG') +
             # restore LCL of caller
-            '@R13\n' +
-            'AM=M-1\n' +
-            'D=M\n' +
-            '@LCL\n' +
-            'M=D\n' +
+            self._getRestoreSegment('LCL') +
             # JMP to return address
             '@R14\n' +
             'A=M\n' +

@@ -46,9 +46,9 @@ class Parser:
         self._reset()
         self._next_line()
 
-        for type in self._cmd_types:
-            if self._curr_cmd in self._cmd_types[type]:
-                self._curr_cmd_type = type
+        for cmd_type in self._cmd_types:
+            if self._curr_cmd in self._cmd_types[cmd_type]:
+                self._curr_cmd_type = cmd_type
 
     def commandType(self):
         return self._curr_cmd_type

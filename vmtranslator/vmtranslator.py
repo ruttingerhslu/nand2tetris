@@ -43,6 +43,12 @@ class VMTranslator:
                         codeWriter.writeGoto(arg1)
                     case 'C_IF':
                         codwWriter.writeIf(arg1)
+                    case 'C_FUNCTION':
+                        codeWriter.writeFunction(arg1)
+                    case 'C_CALL':
+                        codeWriter.writeCall(arg1, arg2)
+            else:
+                codeWriter.writeReturn()
         codeWriter.appendInfinite()
 
 if __name__ == '__main__':
