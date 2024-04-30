@@ -17,46 +17,52 @@ class Tokenizer:
         file = open(self._file, 'r')
         content = self.remove_comments(file.read())
         lines = self.get_lines(content)
-        token = ''
         tokens = []
+
         for line in lines:
             # split for string first
-            line_tokens = re.split(r'(\"[^"]+\")', line)
-            for token in line_tokens:
-                # a string
-                if token.startswith("\""):
-                    tokens.append(token)
+            string_tokens = self._delimit_string(line)
+            for string_token in string_tokens:
+                if not string_token.startswith("\""):
+                    space_tokens = self._delimit_space(string_token)
+                    for space_token in space_tokens:
+                        if (space_token):
+                            if any(symbol in space_token for symbol in self.symbols):
+                                self._delimit_symbol(space_token)
+                            elif any(keyword in space_token for keyword in self.keywords):
+                                self._delimit_keyword(space_token)
+                            else:
+                                self._append_token(space_token)
                 else:
-                    if any(symbol in token for symbol in self.symbols):
-                        pattern = '|'.join(map(re.escape, self.symbols))
-                        new_tokens = re.split(pattern, token)
-                    else:
-                        token_tokens = token.split(" ")
-                        tokens.append(token_tokens)
+                    self._append_token('STRING ' + string_token)
+        return self._tokens
+
+    def _delimit_string(self, token):
+        return re.split(r'(\"[^"]+\")', token)
+
+    def _delimit_space(self, token):
+        token = token.strip()
+        tokens = token.split(' ')
+        return [token.replace(" ", "") for token in tokens]
+
+    def _delimit_symbol(self, token):
+        pattern = "(" + "|".join(re.escape(symbol) for symbol in self.symbols) + ")"
+        parts = re.split(pattern, token)
+        parts = [part for part in parts if part]
+        self._append_token(parts)
+
+    def _delimit_keyword(self, token):
+        pattern = "(" + "|".join(re.escape(keyword) for keyword in self.keywords) + ")"
+        parts = re.split(pattern, token)
+        parts = [part for part in parts if part]
+        self._append_token(parts)
+
+    def _append_token(self, token):
+        if (isinstance(token, list)):
+            self._tokens.extend(token)
+        elif token != '':
+            self._tokens.append(token)
                     
-                
-            print(line_tokens)
-
-        # for char in content:
-        #     char = char.strip()
-        #     if char in self.symbols:
-        #         tokens.append(token) # stringconstant
-        #         tokens.append(char) # symbol
-        #         token = ''
-        #         continue
-        #     token = token + char
-        #     if token in self.keywords:
-        #         tokens.append(token) # keyword
-        #         token = ''
-        # return tokens
-        # tokens = []
-        # for line in content.splitlines():
-        #     for token in line.split(' '):
-        #         token = token.strip()
-        #         if (token != ''):
-        #             tokens.append(token)
-        # return tokens
-
     def comment_replacer(self, match):
         start,mid,end = match.group(1,2,3)
         if mid is None:
