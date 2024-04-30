@@ -17,7 +17,6 @@ class Tokenizer:
         file = open(self._file, 'r')
         content = self.remove_comments(file.read())
         lines = self.get_lines(content)
-        tokens = []
 
         for line in lines:
             # split for string first
@@ -26,7 +25,7 @@ class Tokenizer:
                 if not string_token.startswith("\""):
                     space_tokens = self._delimit_space(string_token)
                     for space_token in space_tokens:
-                        if (space_token):
+                        if space_token:
                             if any(symbol in space_token for symbol in self.symbols):
                                 self._delimit_symbol(space_token)
                             elif any(keyword in space_token for keyword in self.keywords):

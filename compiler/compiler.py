@@ -1,6 +1,7 @@
 from os import path
 import os
 import sys
+from analyzer import Analyzer
 from tokenizer import Tokenizer
 
 class Compiler:
@@ -26,8 +27,8 @@ class Compiler:
 
     def tokenize(self, file):
         tokenizer = Tokenizer(file)
-        # print(tokenizer.tokenize())
-        tokenizer.tokenize()
+        tokens = tokenizer.tokenize()
+        analyzer = Analyzer(tokens)
 
 if __name__ == '__main__':
     jack_path = sys.argv[1]
