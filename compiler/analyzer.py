@@ -62,7 +62,7 @@ class Analyzer:
         elif token == ';' and self._curr_tag == 'varDec':
             self.tags.pop()
             self._curr_tag = ''
-        print(self.tags, token, self._curr_tag)
+        # print(self.tags, token, self._curr_tag)
 
         # # check if varDec:
         # elif token == 'var':
@@ -90,8 +90,7 @@ class Analyzer:
     def is_expression(self, token, category):
         if token in []:
             return True
-        elif :
-            return True
+        elif token in ['test']:
             return True
         elif token in ['+', '-', '*', '/', '&', '|', '<', '>' , '=']:
             return True
