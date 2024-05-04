@@ -19,7 +19,6 @@ class Tokenizer:
         lines = self.get_lines(content)
 
         for line in lines:
-            # split for string first
             string_tokens = self._delimit_string(line)
             for string_token in string_tokens:
                 if not string_token.startswith("\""):
@@ -33,7 +32,7 @@ class Tokenizer:
                             else:
                                 self._append_token(space_token)
                 else:
-                    self._append_token('STRING ' + string_token)
+                    self._append_token(string_token)
         return self._tokens
 
     def _delimit_string(self, token):

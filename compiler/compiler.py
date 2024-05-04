@@ -29,6 +29,7 @@ class Compiler:
         tokenizer = Tokenizer(file)
         tokens = tokenizer.tokenize()
         analyzer = Analyzer(tokens)
+        analyzer.analyze()
 
 if __name__ == '__main__':
     jack_path = sys.argv[1]
