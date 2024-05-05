@@ -15,7 +15,6 @@ class CompilationEngine:
         self.compileClass()
 
     def printXMLToken(self, token):
-        print(token)
         self._write_file.write('<' + self.tokenizer.tokenType().lower() + '> ' +\
             token +\
             ' </' + self.tokenizer.tokenType().lower() + '>\n')
@@ -56,6 +55,7 @@ class CompilationEngine:
             self.compileClassVarDec()
         while self.tokenizer.keyWord() in ['constructor', 'function', 'method']:
             self.compileSubroutineDec()
+        self.process('}')
         self.printXMLTag('</class>')
 
     def compileClassVarDec(self):
@@ -99,6 +99,7 @@ class CompilationEngine:
         while self.tokenizer.keyWord() == 'var':
             self.compileVarDec()
         self.compileStatements()
+        self.process('}')
         self.printXMLTag('</subroutineBody>')
     
     def compileVarDec(self):
