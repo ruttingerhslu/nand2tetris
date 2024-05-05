@@ -12,8 +12,11 @@ class JackTokenizer:
     def __init__(self, file):
         self._file = file
         self._tokens = []
-        self._file_to_tokens(file)
         self._curr_index = -1
+        self._file_to_tokens(file)
+
+    def getClassName(self):
+        return self._tokens[self._tokens.index('class') + 1]
     
     def hasMoreTokens(self):
         return len(self._tokens) - 1 > self._curr_index
@@ -39,25 +42,25 @@ class JackTokenizer:
     
     def keyWord(self):
         if self.tokenType() == 'KEYWORD':
-            return self.tokens[self._curr_index]
+            return self._tokens[self._curr_index]
         return ''
 
     def symbol(self):
         if self.tokenType() == 'SYMBOL':
-            return self.tokens[self._curr_index]
+            return self._tokens[self._curr_index]
         return ''
     
     def identifier(self):
         if self.tokenType() == 'IDENTIFIER':
-            return self.tokens[self._curr_index]
+            return self._tokens[self._curr_index]
 
     def intVal(self):
         if self.tokenType() == 'INT_CONST':
-            return self.tokens[self._curr_index]
+            return self._tokens[self._curr_index]
 
     def stringVal(self):
         if self.tokenType() == 'STRING_CONST':
-            return self.tokens[self._curr_index]
+            return self._tokens[self._curr_index]
 
     def _file_to_tokens(self, file):
         file = open(file, 'r')

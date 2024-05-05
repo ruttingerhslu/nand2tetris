@@ -1,0 +1,18 @@
+<class>
+<keyword> class </keyword>
+<identifier> Main </identifier>
+<symbol> { </symbol>
+<subroutineDec>
+<keyword> function </keyword>
+<keyword> void </keyword>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<subroutineBody>
+<symbol> { </symbol>
+<keyword> var </keyword>
+<identifier> a </identifier>
+<statements>
+</statements>
+</subroutineBody>
+</subroutineDec>
+</class>
