@@ -39,11 +39,13 @@ class JackTokenizer:
     
     def keyWord(self):
         if self.tokenType() == 'KEYWORD':
-            return self.tokens[self._curr_index].upper()
+            return self.tokens[self._curr_index]
+        return ''
 
     def symbol(self):
         if self.tokenType() == 'SYMBOL':
             return self.tokens[self._curr_index]
+        return ''
     
     def identifier(self):
         if self.tokenType() == 'IDENTIFIER':
