@@ -29,9 +29,67 @@
 <symbol> = </symbol>
 <expression>
 <term>
+<identifier> SquareGame </identifier>
+<symbol> . </symbol>
+<identifier> new </identifier>
+<symbol> ( </symbol>
+<expressionList>
+<expression>
+<term>
 </term>
 </expression>
+</expressionList>
+<symbol> ) </symbol>
+</term>
+</expression>
+<symbol> ; </symbol>
 </letStatement>
+<doStatement>
+<keyword> do </keyword>
+<expression>
+<term>
+<identifier> game </identifier>
+<symbol> . </symbol>
+<identifier> run </identifier>
+<symbol> ( </symbol>
+<expressionList>
+<expression>
+<term>
+</term>
+</expression>
+</expressionList>
+<symbol> ) </symbol>
+</term>
+</expression>
+<symbol> ; </symbol>
+</doStatement>
+<doStatement>
+<keyword> do </keyword>
+<expression>
+<term>
+<identifier> game </identifier>
+<symbol> . </symbol>
+<identifier> dispose </identifier>
+<symbol> ( </symbol>
+<expressionList>
+<expression>
+<term>
+</term>
+</expression>
+</expressionList>
+<symbol> ) </symbol>
+</term>
+</expression>
+<symbol> ; </symbol>
+</doStatement>
+<returnStatement>
+<keyword> return </keyword>
+<expression>
+<term>
+</term>
+</expression>
+<symbol> ; </symbol>
+</returnStatement>
 </statements>
 </subroutineBody>
 </subroutineDec>

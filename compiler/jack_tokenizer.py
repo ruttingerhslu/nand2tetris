@@ -14,9 +14,6 @@ class JackTokenizer:
         self._tokens = []
         self._curr_index = -1
         self._file_to_tokens(file)
-
-    def getClassName(self):
-        return self._tokens[self._tokens.index('class') + 1]
     
     def hasMoreTokens(self):
         return len(self._tokens) - 1 > self._curr_index

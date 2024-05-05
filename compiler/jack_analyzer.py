@@ -9,16 +9,10 @@ class JackAnalyzer:
         self._path = path
         self._write_file = ''
         self._read_file = ''
-        self._classNames = []
 
     def compile(self):
         files = self._getJackFiles()
         for file in files:
-            tokenizer = JackTokenizer(file)
-            self._classNames.append(tokenizer.getClassName())
-
-        for file in files:
-            print(file)
             self._read_file = file
             self._write_file = file[:file.rfind('.jack')] + '.xml'
             self.tokenize()
@@ -36,7 +30,7 @@ class JackAnalyzer:
         return files
 
     def tokenize(self):
-        compEngine = CompilationEngine(self._read_file, self._write_file, self._classNames)
+        compEngine = CompilationEngine(self._read_file, self._write_file)
 
 if __name__ == '__main__':
     jack_path = sys.argv[1]

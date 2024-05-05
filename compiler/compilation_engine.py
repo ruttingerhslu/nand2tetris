@@ -1,25 +1,21 @@
 from jack_tokenizer import JackTokenizer
 
 class CompilationEngine:
-    _identifier_names = {
-        'class': [],
-        'subroutine': [],
-        'var': []
-    }
-
-    def __init__(self, read_file, write_file, class_names):
+    def __init__(self, read_file, write_file):
+        with open(write_file, 'r+') as file:
+            file.truncate(0)
         self._read_file = read_file
         self._write_file = open(write_file, 'w')
 
         self.tokenizer = JackTokenizer(read_file)
         self._curr_token = self.tokenizer.advance()
-        
-        self._identifier_names['class'] = class_names
 
-        print(self._identifier_names)
+        self._last_token = ''
+
         self.compileClass()
 
     def printXMLToken(self, token):
+        print(token)
         self._write_file.write('<' + self.tokenizer.tokenType().lower() + '> ' +\
             token +\
             ' </' + self.tokenizer.tokenType().lower() + '>\n')
@@ -45,22 +41,16 @@ class CompilationEngine:
     
     def get_types(self):
         if self.tokenizer.tokenType() == 'IDENTIFIER':
-            return self._identifier_names['class']
+            return [self.tokenizer.identifier()]
         elif self.tokenizer.tokenType() == 'KEYWORD':
             return ['int', 'char', 'boolean']
         else:
-            return ''
-    
-    def process_identifier(self, category):
-        if self.tokenizer.tokenType() == 'IDENTIFIER':
-            self._identifier_names[category].append(self.tokenizer.identifier())
-            self.process(self._identifier_names[category])
-        else: print('syntax error')
+            return []
     
     def compileClass(self):
         self.printXMLTag('<class>')
         self.process('class')
-        self.process_identifier('class')
+        self.process(self.tokenizer.identifier())
         self.process('{')
         while self.tokenizer.keyWord() in ['static', 'field']:
             self.compileClassVarDec()
@@ -72,18 +62,20 @@ class CompilationEngine:
         self.printXMLTag('<classVarDec>')
         self.process(['static', 'field'])
         self.process(self.get_types())
-        self.process_identifier('var')
-        while self.tokenizer.symbol == ',':
+        self.process(self.tokenizer.identifier())
+        while self.tokenizer.symbol() == ',':
             self.process(',')
-            self.process_identifier('var')
+            self.process(self.tokenizer.identifier())
         self.process(';')
         self.printXMLTag('</classVarDec>')
     
     def compileSubroutineDec(self):
         self.printXMLTag('<subroutineDec>')
         self.process(['constructor', 'function', 'method'])
-        self.process(['void', self.get_types()])
-        self.process_identifier('subroutine')
+        types = self.get_types()
+        types.append('void')
+        self.process(types)
+        self.process(self.tokenizer.identifier())
         self.process('(')
         self.compileParameterList()
         self.process(')')
@@ -94,12 +86,11 @@ class CompilationEngine:
         if self.tokenizer.tokenType() in ['IDENTIFIER', 'KEYWORD']:
             self.printXMLTag('<parameterList>')
             self.process(self.get_types())
-            self.process_identifier('var')
-            while self.tokenizer.symbol == ',':
+            self.process(self.tokenizer.identifier())
+            while self.tokenizer.symbol() == ',':
                 self.process(',')
                 self.process(self.get_types())
-                self.process_identifier('var')
-            self.process(';')
+                self.process(self.tokenizer.identifier())
             self.printXMLTag('</parameterList>')
 
     def compileSubroutineBody(self):
@@ -114,11 +105,10 @@ class CompilationEngine:
         self.printXMLTag('<varDec>')
         self.process('var')
         self.process(self.get_types())
-        self.process_identifier('var')
-        print('symbol: ', self.tokenizer.symbol())
+        self.process(self.tokenizer.identifier())
         while self.tokenizer.symbol() == ',':
             self.process(',')
-            self.process_identifier('var')
+            self.process(self.tokenizer.identifier())
         self.process(';')
         self.printXMLTag('</varDec>')
 
@@ -141,7 +131,7 @@ class CompilationEngine:
     def compileLet(self):
         self.printXMLTag('<letStatement>')
         self.process('let')
-        self.process_identifier('var')
+        self.process(self.tokenizer.identifier())
         if self.tokenizer.symbol() == '[':
             self.process('[')
             self.compileExpression()
@@ -213,16 +203,26 @@ class CompilationEngine:
                     self.process(self.tokenizer.keyWord())
                 elif self.tokenizer.keyWord() == 'do':
                     self.process('do')
-                    self.compileSubroutineCall()
+                    self.compileTerm()
             case 'IDENTIFIER':
-                if self.tokenizer.identifier() in self._identifier_names['var']:
-                    self.process(self._identifier_names['var'])
-                    if self.tokenizer.symbol() == '[':
-                        self.process('[')
-                        self.compileExpression()
-                        self.process(']')
-                elif self.tokenizer.identifier() in self._identifier_names['subroutine']:
-                    self.compileSubroutineCall()
+                self._last_token = self.tokenizer.identifier()
+                self.process(self.tokenizer.identifier())
+                if self.tokenizer.tokenType() == 'SYMBOL':
+                    match self.tokenizer.symbol():
+                        case '[':
+                            self.process('[')
+                            self.compileExpression()
+                            self.process(']')
+                        case '(':
+                            self.process('(')
+                            self.compileExpressionList()
+                            self.process(')')
+                        case '.':
+                            self.process('.')
+                            self.process(self.tokenizer.identifier())
+                            self.process('(')
+                            self.compileExpressionList()
+                            self.process(')')
             case 'SYMBOL':
                 if self.tokenizer.symbol() == '(':
                     self.process('(')
@@ -233,22 +233,10 @@ class CompilationEngine:
                     self.compileTerm()
         self.printXMLTag('</term>')
 
-    def compileSubroutineCall(self):
-        if (self._identifier_names['class']):
-            self.process(self._identifier_names['class'])
-            self.process('.')
-        elif (self._identifier_names['var']):
-            self.process(self._identifier_names['var'])
-            self.process('.')
-        self.process(self._identifier_names['subroutine'])
-        self.process('(')
-        self.compileExpressionList()
-        self.process(')')
-
     def compileExpressionList(self):
         self.printXMLTag('<expressionList>')
         self.compileExpression()
-        while self.tokenizer.symbol == ',':
+        while self.tokenizer.symbol() == ',':
             self.process(',')
             self.compileExpression()
         self.printXMLTag('</expressionList>')
