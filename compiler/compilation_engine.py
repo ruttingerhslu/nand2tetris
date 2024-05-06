@@ -2,16 +2,19 @@ from collections import deque
 
 from jack_tokenizer import JackTokenizer
 from symbol_table import SymbolTable
+from vm_writer import VMWriter
 
 class CompilationEngine:
     def __init__(self, read_file, write_file):
         self._read_file = read_file
         self._write_file = open(write_file, 'w')
 
+        vm_file = read_file[:read_file.rfind('.jack')] + '.vm'
+        self.vm_writer = VMWriter(vm_file)
+
         self.tokenizer = JackTokenizer(read_file)
         self._curr_token = self.tokenizer.advance()
 
-        self._last_token = ''
         self._tab_count = 0
         self._symbol_tables = deque()
 
@@ -106,7 +109,7 @@ class CompilationEngine:
         self._tab_count -= 1
         self.printXMLTag('</subroutineDec>')
         if hasParameters:
-            self._symbol_tables.pop()
+            self._symbol_tables.pop() 
     
     def compileParameterList(self):
         symbolTable = SymbolTable()
@@ -271,7 +274,8 @@ class CompilationEngine:
                     self.process('do')
                     self.compileTerm()
             case 'IDENTIFIER':
-                self._last_token = self.tokenizer.identifier()
+                if (symbolTable for symbolTable in self._symbol_tables if symbolTable.kindOf(self.tokenizer.identifier()) == 'VAR'):
+                    self.vm_writer.writePush('var', self.tokenizer.identifier())
                 self.process(self.tokenizer.identifier())
                 if self.tokenizer.tokenType() == 'SYMBOL':
                     match self.tokenizer.symbol():
