@@ -4,7 +4,7 @@ import sys
 from compilation_engine import CompilationEngine
 from jack_tokenizer import JackTokenizer
 
-class JackAnalyzer:
+class JackCompiler:
     def __init__(self, path):
         self._path = path
         self._write_file = ''
