@@ -205,7 +205,8 @@ class CompilationEngine:
         self.printXMLTag('<returnStatement>')
         self._tab_count += 1
         self.process('return')
-        self.compileExpression()
+        if self.tokenizer.symbol() != ';':
+            self.compileExpression()
         self.process(';')
         self._tab_count -= 1
         self.printXMLTag('</returnStatement>')
