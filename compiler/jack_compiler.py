@@ -35,5 +35,5 @@ class JackCompiler:
 if __name__ == '__main__':
     jack_path = sys.argv[1]
 
-    jackAnalyzer = JackAnalyzer(jack_path)
-    jackAnalyzer.compile()
+    jackCompiler = JackCompiler(jack_path)
+    jackCompiler.compile()

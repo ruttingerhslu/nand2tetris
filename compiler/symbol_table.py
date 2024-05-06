@@ -1,3 +1,5 @@
+import json
+
 type Kind = tuple['STATIC', 'FIELD', 'ARG', 'VAR']
 
 class SymbolTable():
@@ -7,8 +9,8 @@ class SymbolTable():
     def reset(self):
         self._identifiers = []
     
-    def define(self, name, type, kind: Kind):
-        self._identifiers.append({'name': name, 'type': type, 'kind': kind})
+    def define(self, name, idType, kind: Kind):
+        self._identifiers.append({'name': name, 'type': idType, 'kind': kind})
     
     def varCount(self, kind: Kind) -> int:
         count = 0
@@ -29,3 +31,6 @@ class SymbolTable():
 
     def indexOf(self, name) -> int:
         return self._identifiers.index(name)
+    
+    def toString(self) -> str:
+        return json.dumps(self._identifiers)

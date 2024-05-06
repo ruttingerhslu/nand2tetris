@@ -1,4 +1,7 @@
+from collections import deque
+
 from jack_tokenizer import JackTokenizer
+from symbol_table import SymbolTable
 
 class CompilationEngine:
     def __init__(self, read_file, write_file):
@@ -9,8 +12,8 @@ class CompilationEngine:
         self._curr_token = self.tokenizer.advance()
 
         self._last_token = ''
-
         self._tab_count = 0
+        self._symbol_tables = deque()
 
         self.compileClass()
 
@@ -62,21 +65,31 @@ class CompilationEngine:
         self.process('}')
         self._tab_count -= 1
         self.printXMLTag('</class>')
+        self._symbol_tables.pop()
 
     def compileClassVarDec(self):
+        symbolTable = SymbolTable()
         self.printXMLTag('<classVarDec>')
         self._tab_count += 1
+        idKind = self.tokenizer.keyWord()
         self.process(['static', 'field'])
+        idType = self.tokenizer.keyWord() or self.tokenizer.identifier()
         self.process(self.get_types())
+        idName = self.tokenizer.identifier()
         self.process(self.tokenizer.identifier())
+        symbolTable.define(idName, idType, idKind)
         while self.tokenizer.symbol() == ',':
             self.process(',')
+            idName = self.tokenizer.identifier()
             self.process(self.tokenizer.identifier())
+            symbolTable.define(idName, idType, idKind)
         self.process(';')
         self._tab_count -= 1
         self.printXMLTag('</classVarDec>')
+        self._symbol_tables.append(symbolTable)
     
     def compileSubroutineDec(self):
+        hasParameters = False
         self.printXMLTag('<subroutineDec>')
         self._tab_count += 1
         self.process(['constructor', 'function', 'method'])
@@ -85,48 +98,70 @@ class CompilationEngine:
         self.process(types)
         self.process(self.tokenizer.identifier())
         self.process('(')
-        self.compileParameterList()
+        if self.tokenizer.tokenType() in ['IDENTIFIER', 'KEYWORD']:
+            self.compileParameterList()
+            hasParameters = True
         self.process(')')
         self.compileSubroutineBody()
         self._tab_count -= 1
         self.printXMLTag('</subroutineDec>')
+        if hasParameters:
+            self._symbol_tables.pop()
     
     def compileParameterList(self):
-        if self.tokenizer.tokenType() in ['IDENTIFIER', 'KEYWORD']:
-            self.printXMLTag('<parameterList>')
-            self._tab_count += 1
+        symbolTable = SymbolTable()
+        self.printXMLTag('<parameterList>')
+        self._tab_count += 1
+        idType = self.tokenizer.keyWord() or self.tokenizer.identifier()
+        self.process(self.get_types())
+        idName = self.tokenizer.identifier()
+        self.process(self.tokenizer.identifier())
+        symbolTable.define(idName, idType, 'ARG')
+        while self.tokenizer.symbol() == ',':
+            self.process(',')
+            idType = self.tokenizer.keyWord() or self.tokenizer.identifier()
             self.process(self.get_types())
+            idName = self.tokenizer.identifier()
             self.process(self.tokenizer.identifier())
-            while self.tokenizer.symbol() == ',':
-                self.process(',')
-                self.process(self.get_types())
-                self.process(self.tokenizer.identifier())
-            self._tab_count -= 1
-            self.printXMLTag('</parameterList>')
+            symbolTable.define(idName, idType, 'ARG')
+        self._tab_count -= 1
+        self.printXMLTag('</parameterList>')
+        self._symbol_tables.append(symbolTable)
 
     def compileSubroutineBody(self):
+        hasVars = False
         self.printXMLTag('<subroutineBody>')
         self._tab_count += 1
         self.process('{')
         while self.tokenizer.keyWord() == 'var':
             self.compileVarDec()
+            hasVars = True
         self.compileStatements()
         self.process('}')
         self._tab_count -= 1
         self.printXMLTag('</subroutineBody>')
+        if hasVars:
+            self._symbol_tables.pop()
     
     def compileVarDec(self):
+        symbolTable = SymbolTable()
         self.printXMLTag('<varDec>')
         self._tab_count += 1
         self.process('var')
+        idType = self.tokenizer.keyWord() or self.tokenizer.identifier()
         self.process(self.get_types())
+        idName = self.tokenizer.identifier()
         self.process(self.tokenizer.identifier())
+        symbolTable.define(idName, idType, 'VAR')
         while self.tokenizer.symbol() == ',':
             self.process(',')
+            idName = self.tokenizer.identifier()
             self.process(self.tokenizer.identifier())
+            symbolTable.define(idName, idType, 'VAR')
         self.process(';')
         self._tab_count -= 1
         self.printXMLTag('</varDec>')
+        self._symbol_tables.append(symbolTable)
 
     def compileStatements(self):
         self.printXMLTag('<statements>')
