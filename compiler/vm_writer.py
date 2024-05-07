@@ -1,10 +1,21 @@
 type PushSegment = tuple('CONSTANT', 'ARGUMENT', 'LOCAL', 'STATIC', 'THIS', 'THAT', 'POINTER', 'TEMP')
 type PopSegment = tuple('ARGUMENT', 'LOCAL', 'STATIC', 'THIS', 'THAT', 'POINTER', 'TEMP')
-type Command = tuple('ADD', 'SUB', 'NEG', 'EQ', 'GT', 'LT', 'AND', 'OR', 'NOT')
+type Command = tuple('add', 'sub', 'neg', 'eq', 'gt', 'lt', 'and', 'or', 'not')
 
 class VMWriter:
+    symbol_to_vm_command = {
+        '+': 'add',
+        '-': 'subtract',
+        '*': 'multiply',
+        '/': 'divide',
+        '^': 'power'
+    }
+
     def __init__(self, vm_file):
         self._file = open(vm_file, 'w')
+
+    def symbol_to_cmd(self, symbol):
+        return self.symbol_to_vm_command.get(symbol, None)
     
     def writePush(self, segment: PushSegment, index: int):
         self._file.write(f'push {segment.lower()} {index}\n')
@@ -12,8 +23,8 @@ class VMWriter:
     def writePop(self, segment: PopSegment, index: int):
         self._file.write(f'push {segment.lower()} {index}\n')
 
-    def writeArithmetic(self, command: Command):
-        self._file.write(f'{command.lower()}\n')
+    def writeArithmetic(self, symbol):
+        self._file.write(f'{self.symbol_to_cmd(symbol)}\n')
 
     def writeLabel(self, label: str):
         self._file.write(f'label {label}\n')
