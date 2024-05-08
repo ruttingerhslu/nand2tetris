@@ -21,16 +21,21 @@ class SymbolTable():
 
     def kindOf(self, name) -> Kind:
         for identifier in self._identifiers:
-            if identifier('name') == name:
-                return identifier('kind')
-    
+            if identifier['name'] == name:
+                return identifier['kind']
+        return ''
+
     def typeOf(self, name) -> str:
         for identifier in self._identifiers:
-            if identifier('name') == name:
-                return identifier('type')
+            if identifier['name'] == name:
+                return identifier['type']
+        return ''
 
     def indexOf(self, name) -> int:
-        return self._identifiers.index(name)
+        for i, identifier in enumerate(self._identifiers):
+            if identifier['kind'] == self.kindOf(name) and identifier['name'] == name:
+                return i
+        return -1
     
     def toString(self) -> str:
         return json.dumps(self._identifiers)
