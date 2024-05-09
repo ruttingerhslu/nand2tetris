@@ -1,9 +1,16 @@
-push var SquareGame
-push var game
-push var game
-push var a
-push var i
-push var j
-push var j
-push var i
-push var j
+push VAR 0
+push VAR 0
+push CONSTANT 1
+push VAR 3
+push CONSTANT 2
+push VAR 0
+push VAR 1
+neg
+None
+push VAR 1
+push CONSTANT 2
+neg
+&
+push VAR 0
+push VAR 1
+or

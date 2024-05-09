@@ -5,6 +5,21 @@ from symbol_table import SymbolTable
 from vm_writer import VMWriter
 
 class CompilationEngine:
+    _binary_ops = {
+        '+': 'add',
+        '-': 'sub',
+        '/': '&',
+        '|': 'or',
+        '<': 'lt',
+        '>': 'gt',
+        '=': 'eq'
+    }
+
+    _unary_ops = {
+        '-': 'neg',
+        '~': 'not'
+    }
+
     def __init__(self, read_file, write_file):
         self._read_file = read_file
         self._write_file = open(write_file, 'w')
@@ -246,8 +261,10 @@ class CompilationEngine:
         self._tab_count += 1
         self.compileTerm()
         while self.tokenizer.symbol() in ['+', '-', '*', '/', '&', '|', '<', '>', '=']:
+            last_token = self.tokenizer.symbol()
             self.process(self.tokenizer.symbol())
             self.compileTerm()
+            self.vm_writer.writeArithmetic(self._binary_ops.get(last_token))
         self._tab_count -= 1
         self.printXMLTag('</expression>')
     
@@ -256,6 +273,7 @@ class CompilationEngine:
         self._tab_count += 1
         match self.tokenizer.tokenType():
             case 'INT_CONST':
+                self.vm_writer.writePush('CONSTANT', self.tokenizer.intVal())
                 self.process(self.tokenizer.intVal())
             case 'STRING_CONST':
                 self.process(self.tokenizer.stringVal())
@@ -266,8 +284,8 @@ class CompilationEngine:
                     self.process('do')
                     self.compileTerm()
             case 'IDENTIFIER':
-                if (symbolTable for symbolTable in self._symbol_tables if symbolTable.kindOf(self.tokenizer.identifier()) == 'VAR'):
-                    self.vm_writer.writePush('var', self.tokenizer.identifier())
+                if self._kindOf(self.tokenizer.identifier()) == 'VAR':
+                    self.vm_writer.writePush(self._kindOf(self.tokenizer.identifier()), self._indexOf(self.tokenizer.identifier()))
                 self.process(self.tokenizer.identifier())
                 if self.tokenizer.tokenType() == 'SYMBOL':
                     match self.tokenizer.symbol():
@@ -286,13 +304,17 @@ class CompilationEngine:
                             self.compileExpressionList()
                             self.process(')')
             case 'SYMBOL':
-                if self.tokenizer.symbol() == '(':
-                    self.process('(')
-                    self.compileExpression()
-                    self.process(')')
-                elif self.tokenizer.symbol() in ['-', '~']:
-                    self.process(self.tokenizer.symbol())
-                    self.compileTerm()
+                match self.tokenizer.symbol():
+                    case '(':
+                        self.process('(')
+                        self.compileExpression()
+                        self.process(')')
+                    case '-' | '~':
+                        last_token = self.tokenizer.symbol()
+                        self.process(self.tokenizer.symbol())
+                        self.compileTerm()
+                        self.vm_writer.writeArithmetic(self._unary_ops.get(last_token))
+
         self._tab_count -= 1
         self.printXMLTag('</term>')
 

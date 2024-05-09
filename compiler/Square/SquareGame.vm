@@ -1,28 +1,47 @@
-push var Square
-push var square
-push var Memory
-push var direction
-push var square
-push var direction
-push var square
-push var direction
-push var square
-push var direction
-push var square
-push var Sys
-push var exit
-push var key
-push var Keyboard
-push var moveSquare
-push var key
-push var key
-push var square
-push var key
-push var square
-push var key
-push var key
-push var key
-push var key
-push var key
-push var Keyboard
-push var moveSquare
+push CONSTANT 0
+push CONSTANT 0
+push CONSTANT 30
+push CONSTANT 0
+push CONSTANT 1
+eq
+push CONSTANT 2
+eq
+push CONSTANT 3
+eq
+push CONSTANT 4
+eq
+push CONSTANT 5
+push VAR 1
+not
+push VAR 0
+push CONSTANT 0
+eq
+push VAR 0
+push CONSTANT 81
+eq
+push VAR 0
+push CONSTANT 90
+eq
+push VAR 0
+push CONSTANT 88
+eq
+push VAR 0
+push CONSTANT 131
+eq
+push CONSTANT 1
+push VAR 0
+push CONSTANT 133
+eq
+push CONSTANT 2
+push VAR 0
+push CONSTANT 130
+eq
+push CONSTANT 3
+push VAR 0
+push CONSTANT 132
+eq
+push CONSTANT 4
+push VAR 0
+push CONSTANT 0
+eq
+not

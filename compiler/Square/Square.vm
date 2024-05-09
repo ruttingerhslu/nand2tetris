@@ -1,106 +1,67 @@
-push var Ax
-push var Ay
-push var Asize
-push var draw
-push var Memory
-push var Screen
-push var Screen
-push var x
-push var y
-push var x
-push var size
-push var y
-push var size
-push var Screen
-push var Screen
-push var x
-push var y
-push var x
-push var size
-push var y
-push var size
-push var y
-push var size
-push var x
-push var size
-push var erase
-push var size
-push var draw
-push var size
-push var erase
-push var size
-push var draw
-push var y
-push var Screen
-push var Screen
-push var x
-push var y
-push var size
-push var x
-push var size
-push var y
-push var size
-push var y
-push var Screen
-push var Screen
-push var x
-push var y
-push var x
-push var size
-push var y
-push var y
-push var size
-push var Screen
-push var Screen
-push var x
-push var y
-push var x
-push var size
-push var y
-push var y
-push var Screen
-push var Screen
-push var x
-push var y
-push var size
-push var x
-push var size
-push var y
-push var size
-push var x
-push var Screen
-push var Screen
-push var x
-push var size
-push var y
-push var x
-push var size
-push var y
-push var size
-push var x
-push var Screen
-push var Screen
-push var x
-push var y
-push var x
-push var y
-push var size
-push var x
-push var size
-push var Screen
-push var Screen
-push var x
-push var y
-push var x
-push var y
-push var size
-push var x
-push var Screen
-push var Screen
-push var x
-push var size
-push var y
-push var x
-push var size
-push var y
-push var size
+add
+add
+add
+add
+add
+push CONSTANT 254
+lt
+add
+push CONSTANT 510
+lt
+None
+push CONSTANT 2
+add
+push CONSTANT 2
+gt
+push CONSTANT 2
+sub
+push CONSTANT 1
+gt
+add
+push CONSTANT 1
+sub
+add
+add
+push CONSTANT 2
+sub
+add
+push CONSTANT 1
+add
+add
+push CONSTANT 254
+lt
+add
+push CONSTANT 1
+add
+push CONSTANT 2
+add
+add
+push CONSTANT 1
+sub
+add
+add
+push CONSTANT 1
+gt
+add
+push CONSTANT 1
+sub
+add
+add
+push CONSTANT 2
+sub
+push CONSTANT 1
+add
+add
+add
+push CONSTANT 510
+lt
+push CONSTANT 1
+add
+add
+push CONSTANT 2
+add
+add
+push CONSTANT 1
+sub
+add
+add
