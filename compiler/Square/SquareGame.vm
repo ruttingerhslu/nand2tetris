@@ -1,47 +1,51 @@
 push CONSTANT 0
 push CONSTANT 0
 push CONSTANT 30
+call .new 3
 push CONSTANT 0
+call .dispose 0
+call .deAlloc 1
 push CONSTANT 1
 eq
+call .moveUp 0
 push CONSTANT 2
 eq
+call .moveDown 0
 push CONSTANT 3
 eq
+call .moveLeft 0
 push CONSTANT 4
 eq
+call .moveRight 0
 push CONSTANT 5
-push VAR 1
+call .wait 1
 not
-push VAR 0
 push CONSTANT 0
 eq
-push VAR 0
+call .keyPressed 0
+call .moveSquare 0
 push CONSTANT 81
 eq
-push VAR 0
 push CONSTANT 90
 eq
-push VAR 0
+call .decSize 0
 push CONSTANT 88
 eq
-push VAR 0
+call .incSize 0
 push CONSTANT 131
 eq
 push CONSTANT 1
-push VAR 0
 push CONSTANT 133
 eq
 push CONSTANT 2
-push VAR 0
 push CONSTANT 130
 eq
 push CONSTANT 3
-push VAR 0
 push CONSTANT 132
 eq
 push CONSTANT 4
-push VAR 0
 push CONSTANT 0
 eq
 not
+call .keyPressed 0
+call .moveSquare 0

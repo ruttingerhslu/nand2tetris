@@ -1,7 +1,13 @@
+call .draw 0
+call .deAlloc 1
+call .setColor 1
 add
 add
+call .drawRectangle 4
+call .setColor 1
 add
 add
+call .drawRectangle 4
 add
 push CONSTANT 254
 lt
@@ -9,59 +15,79 @@ add
 push CONSTANT 510
 lt
 None
+call .erase 0
 push CONSTANT 2
 add
+call .draw 0
 push CONSTANT 2
 gt
+call .erase 0
 push CONSTANT 2
 sub
+call .draw 0
 push CONSTANT 1
 gt
+call .setColor 1
 add
 push CONSTANT 1
 sub
 add
 add
+call .drawRectangle 4
 push CONSTANT 2
 sub
+call .setColor 1
 add
 push CONSTANT 1
 add
+call .drawRectangle 4
 add
 push CONSTANT 254
 lt
+call .setColor 1
 add
 push CONSTANT 1
 add
+call .drawRectangle 4
 push CONSTANT 2
 add
+call .setColor 1
 add
 push CONSTANT 1
 sub
 add
 add
+call .drawRectangle 4
 push CONSTANT 1
 gt
+call .setColor 1
 add
 push CONSTANT 1
 sub
 add
 add
+call .drawRectangle 4
 push CONSTANT 2
 sub
+call .setColor 1
 push CONSTANT 1
 add
 add
+call .drawRectangle 4
 add
 push CONSTANT 510
 lt
+call .setColor 1
 push CONSTANT 1
 add
 add
+call .drawRectangle 4
 push CONSTANT 2
 add
+call .setColor 1
 add
 push CONSTANT 1
 sub
 add
 add
+call .drawRectangle 4

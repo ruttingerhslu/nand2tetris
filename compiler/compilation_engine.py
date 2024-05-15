@@ -34,6 +34,8 @@ class CompilationEngine:
         self._symbol_tables = deque()
         self._class_table = SymbolTable()
         self._method_table = SymbolTable()
+        self._last_token = ''
+        self._method_class = ''
 
         self.compileClass()
 
@@ -102,7 +104,7 @@ class CompilationEngine:
             self.process(',')
             idName = self.tokenizer.identifier()
             self.process(self.tokenizer.identifier())
-            self._class_talbe.define(idName, idType, idKind)
+            self._class_table.define(idName, idType, idKind)
         self.process(';')
         self._tab_count -= 1
         self.printXMLTag('</classVarDec>')
@@ -259,10 +261,10 @@ class CompilationEngine:
         self._tab_count += 1
         self.compileTerm()
         while self.tokenizer.symbol() in ['+', '-', '*', '/', '&', '|', '<', '>', '=']:
-            last_token = self.tokenizer.symbol()
+            binaryOp = self.tokenizer.symbol()
             self.process(self.tokenizer.symbol())
             self.compileTerm()
-            self.vm_writer.writeArithmetic(self._binary_ops.get(last_token))
+            self.vm_writer.writeArithmetic(self._binary_ops.get(binaryOp))
         self._tab_count -= 1
         self.printXMLTag('</expression>')
     
@@ -274,6 +276,7 @@ class CompilationEngine:
                 self.vm_writer.writePush('CONSTANT', self.tokenizer.intVal())
                 self.process(self.tokenizer.intVal())
             case 'STRING_CONST':
+                self.vm_writer.writePush('CONSTANT', self.tokenizer.stringVal())
                 self.process(self.tokenizer.stringVal())
             case 'KEYWORD':
                 if self.tokenizer.keyWord() in ['true', 'false', 'null', 'this']:
@@ -282,9 +285,12 @@ class CompilationEngine:
                     self.process('do')
                     self.compileTerm()
             case 'IDENTIFIER':
+                identifier = self.tokenizer.identifier()
+                self.process(identifier)
+                # push if var
                 if self._kindOf(self.tokenizer.identifier()) == 'VAR':
-                    self.vm_writer.writePush(self._kindOf(self.tokenizer.identifier()), self._indexOf(self.tokenizer.identifier()))
-                self.process(self.tokenizer.identifier())
+                    self.vm_writer.writePush(self._kindOf(identifier), self._indexOf(identifier))
+
                 if self.tokenizer.tokenType() == 'SYMBOL':
                     match self.tokenizer.symbol():
                         case '[':
@@ -292,15 +298,16 @@ class CompilationEngine:
                             self.compileExpression()
                             self.process(']')
                         case '(':
+                            # push method
+                            className = self._typeOf(identifier)
                             self.process('(')
-                            self.compileExpressionList()
+                            nArgs = self.compileExpressionList()
                             self.process(')')
+                            self.vm_writer.writeCall(className + '.' + identifier, nArgs)
                         case '.':
                             self.process('.')
-                            self.process(self.tokenizer.identifier())
-                            self.process('(')
-                            self.compileExpressionList()
-                            self.process(')')
+                            self.compileTerm()
+
             case 'SYMBOL':
                 match self.tokenizer.symbol():
                     case '(':
@@ -308,10 +315,10 @@ class CompilationEngine:
                         self.compileExpression()
                         self.process(')')
                     case '-' | '~':
-                        last_token = self.tokenizer.symbol()
+                        unaryOp = self.tokenizer.symbol()
                         self.process(self.tokenizer.symbol())
                         self.compileTerm()
-                        self.vm_writer.writeArithmetic(self._unary_ops.get(last_token))
+                        self.vm_writer.writeArithmetic(self._unary_ops.get(unaryOp))
 
         self._tab_count -= 1
         self.printXMLTag('</term>')
@@ -319,10 +326,10 @@ class CompilationEngine:
     def compileExpressionList(self):
         self.printXMLTag('<expressionList>')
         self._tab_count += 1
-        self.compileExpression()
         count = 0
         if not self.tokenizer.symbol() == ')':
             count += 1
+        self.compileExpression()
         while self.tokenizer.symbol() == ',':
             self.process(',')
             self.compileExpression()
@@ -332,19 +339,22 @@ class CompilationEngine:
         return count
 
     def _kindOf(self, name):
-        for symbol_table in reversed(self._symbol_tables):
+        for symbol_table in [self._method_table, self._class_table]:
             kind = symbol_table.kindOf(name)
             if not kind == '':
                 return kind
+        return ''
 
     def _typeOf(self, name):
-        for symbol_table in reversed(self._symbol_tables):
+        for symbol_table in [self._method_table, self._class_table]:
             idType = symbol_table.typeOf(name)
             if not idType == '':
                 return idType
+        return ''
 
     def _indexOf(self, name):
-        for symbol_table in reversed(self._symbol_tables):
+        for symbol_table in [self._method_table, self._class_table]:
             i = symbol_table.indexOf(name)
             if i > -1:
                 return i
+        return ''

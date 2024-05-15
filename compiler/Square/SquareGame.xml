@@ -31,28 +31,30 @@
 						<term>
 							<identifier> Square </identifier>
 							<symbol> . </symbol>
-							<identifier> new </identifier>
-							<symbol> ( </symbol>
-							<expressionList>
-								<expression>
-									<term>
-										<int_const> 0 </int_const>
-									</term>
-								</expression>
-								<symbol> , </symbol>
-								<expression>
-									<term>
-										<int_const> 0 </int_const>
-									</term>
-								</expression>
-								<symbol> , </symbol>
-								<expression>
-									<term>
-										<int_const> 30 </int_const>
-									</term>
-								</expression>
-							</expressionList>
-							<symbol> ) </symbol>
+							<term>
+								<identifier> new </identifier>
+								<symbol> ( </symbol>
+								<expressionList>
+									<expression>
+										<term>
+											<int_const> 0 </int_const>
+										</term>
+									</expression>
+									<symbol> , </symbol>
+									<expression>
+										<term>
+											<int_const> 0 </int_const>
+										</term>
+									</expression>
+									<symbol> , </symbol>
+									<expression>
+										<term>
+											<int_const> 30 </int_const>
+										</term>
+									</expression>
+								</expressionList>
+								<symbol> ) </symbol>
+							</term>
 						</term>
 					</expression>
 					<symbol> ; </symbol>
@@ -96,15 +98,17 @@
 						<term>
 							<identifier> square </identifier>
 							<symbol> . </symbol>
-							<identifier> dispose </identifier>
-							<symbol> ( </symbol>
-							<expressionList>
-								<expression>
-									<term>
-									</term>
-								</expression>
-							</expressionList>
-							<symbol> ) </symbol>
+							<term>
+								<identifier> dispose </identifier>
+								<symbol> ( </symbol>
+								<expressionList>
+									<expression>
+										<term>
+										</term>
+									</expression>
+								</expressionList>
+								<symbol> ) </symbol>
+							</term>
 						</term>
 					</expression>
 					<symbol> ; </symbol>
@@ -115,16 +119,18 @@
 						<term>
 							<identifier> Memory </identifier>
 							<symbol> . </symbol>
-							<identifier> deAlloc </identifier>
-							<symbol> ( </symbol>
-							<expressionList>
-								<expression>
-									<term>
-										<keyword> this </keyword>
-									</term>
-								</expression>
-							</expressionList>
-							<symbol> ) </symbol>
+							<term>
+								<identifier> deAlloc </identifier>
+								<symbol> ( </symbol>
+								<expressionList>
+									<expression>
+										<term>
+											<keyword> this </keyword>
+										</term>
+									</expression>
+								</expressionList>
+								<symbol> ) </symbol>
+							</term>
 						</term>
 					</expression>
 					<symbol> ; </symbol>
@@ -167,15 +173,17 @@
 								<term>
 									<identifier> square </identifier>
 									<symbol> . </symbol>
-									<identifier> moveUp </identifier>
-									<symbol> ( </symbol>
-									<expressionList>
-										<expression>
-											<term>
-											</term>
-										</expression>
-									</expressionList>
-									<symbol> ) </symbol>
+									<term>
+										<identifier> moveUp </identifier>
+										<symbol> ( </symbol>
+										<expressionList>
+											<expression>
+												<term>
+												</term>
+											</expression>
+										</expressionList>
+										<symbol> ) </symbol>
+									</term>
 								</term>
 							</expression>
 							<symbol> ; </symbol>
@@ -204,15 +212,17 @@
 								<term>
 									<identifier> square </identifier>
 									<symbol> . </symbol>
-									<identifier> moveDown </identifier>
-									<symbol> ( </symbol>
-									<expressionList>
-										<expression>
-											<term>
-											</term>
-										</expression>
-									</expressionList>
-									<symbol> ) </symbol>
+									<term>
+										<identifier> moveDown </identifier>
+										<symbol> ( </symbol>
+										<expressionList>
+											<expression>
+												<term>
+												</term>
+											</expression>
+										</expressionList>
+										<symbol> ) </symbol>
+									</term>
 								</term>
 							</expression>
 							<symbol> ; </symbol>
@@ -241,15 +251,17 @@
 								<term>
 									<identifier> square </identifier>
 									<symbol> . </symbol>
-									<identifier> moveLeft </identifier>
-									<symbol> ( </symbol>
-									<expressionList>
-										<expression>
-											<term>
-											</term>
-										</expression>
-									</expressionList>
-									<symbol> ) </symbol>
+									<term>
+										<identifier> moveLeft </identifier>
+										<symbol> ( </symbol>
+										<expressionList>
+											<expression>
+												<term>
+												</term>
+											</expression>
+										</expressionList>
+										<symbol> ) </symbol>
+									</term>
 								</term>
 							</expression>
 							<symbol> ; </symbol>
@@ -278,15 +290,17 @@
 								<term>
 									<identifier> square </identifier>
 									<symbol> . </symbol>
-									<identifier> moveRight </identifier>
-									<symbol> ( </symbol>
-									<expressionList>
-										<expression>
-											<term>
-											</term>
-										</expression>
-									</expressionList>
-									<symbol> ) </symbol>
+									<term>
+										<identifier> moveRight </identifier>
+										<symbol> ( </symbol>
+										<expressionList>
+											<expression>
+												<term>
+												</term>
+											</expression>
+										</expressionList>
+										<symbol> ) </symbol>
+									</term>
 								</term>
 							</expression>
 							<symbol> ; </symbol>
@@ -300,16 +314,18 @@
 						<term>
 							<identifier> Sys </identifier>
 							<symbol> . </symbol>
-							<identifier> wait </identifier>
-							<symbol> ( </symbol>
-							<expressionList>
-								<expression>
-									<term>
-										<int_const> 5 </int_const>
-									</term>
-								</expression>
-							</expressionList>
-							<symbol> ) </symbol>
+							<term>
+								<identifier> wait </identifier>
+								<symbol> ( </symbol>
+								<expressionList>
+									<expression>
+										<term>
+											<int_const> 5 </int_const>
+										</term>
+									</expression>
+								</expressionList>
+								<symbol> ) </symbol>
+							</term>
 						</term>
 					</expression>
 					<symbol> ; </symbol>
@@ -391,15 +407,17 @@
 										<term>
 											<identifier> Keyboard </identifier>
 											<symbol> . </symbol>
-											<identifier> keyPressed </identifier>
-											<symbol> ( </symbol>
-											<expressionList>
-												<expression>
-													<term>
-													</term>
-												</expression>
-											</expressionList>
-											<symbol> ) </symbol>
+											<term>
+												<identifier> keyPressed </identifier>
+												<symbol> ( </symbol>
+												<expressionList>
+													<expression>
+														<term>
+														</term>
+													</expression>
+												</expressionList>
+												<symbol> ) </symbol>
+											</term>
 										</term>
 									</expression>
 									<symbol> ; </symbol>
@@ -474,15 +492,17 @@
 										<term>
 											<identifier> square </identifier>
 											<symbol> . </symbol>
-											<identifier> decSize </identifier>
-											<symbol> ( </symbol>
-											<expressionList>
-												<expression>
-													<term>
-													</term>
-												</expression>
-											</expressionList>
-											<symbol> ) </symbol>
+											<term>
+												<identifier> decSize </identifier>
+												<symbol> ( </symbol>
+												<expressionList>
+													<expression>
+														<term>
+														</term>
+													</expression>
+												</expressionList>
+												<symbol> ) </symbol>
+											</term>
 										</term>
 									</expression>
 									<symbol> ; </symbol>
@@ -511,15 +531,17 @@
 										<term>
 											<identifier> square </identifier>
 											<symbol> . </symbol>
-											<identifier> incSize </identifier>
-											<symbol> ( </symbol>
-											<expressionList>
-												<expression>
-													<term>
-													</term>
-												</expression>
-											</expressionList>
-											<symbol> ) </symbol>
+											<term>
+												<identifier> incSize </identifier>
+												<symbol> ( </symbol>
+												<expressionList>
+													<expression>
+														<term>
+														</term>
+													</expression>
+												</expressionList>
+												<symbol> ) </symbol>
+											</term>
 										</term>
 									</expression>
 									<symbol> ; </symbol>
@@ -675,15 +697,17 @@
 										<term>
 											<identifier> Keyboard </identifier>
 											<symbol> . </symbol>
-											<identifier> keyPressed </identifier>
-											<symbol> ( </symbol>
-											<expressionList>
-												<expression>
-													<term>
-													</term>
-												</expression>
-											</expressionList>
-											<symbol> ) </symbol>
+											<term>
+												<identifier> keyPressed </identifier>
+												<symbol> ( </symbol>
+												<expressionList>
+													<expression>
+														<term>
+														</term>
+													</expression>
+												</expressionList>
+												<symbol> ) </symbol>
+											</term>
 										</term>
 									</expression>
 									<symbol> ; </symbol>

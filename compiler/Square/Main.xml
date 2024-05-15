@@ -31,15 +31,17 @@
 						<term>
 							<identifier> SquareGame </identifier>
 							<symbol> . </symbol>
-							<identifier> new </identifier>
-							<symbol> ( </symbol>
-							<expressionList>
-								<expression>
-									<term>
-									</term>
-								</expression>
-							</expressionList>
-							<symbol> ) </symbol>
+							<term>
+								<identifier> new </identifier>
+								<symbol> ( </symbol>
+								<expressionList>
+									<expression>
+										<term>
+										</term>
+									</expression>
+								</expressionList>
+								<symbol> ) </symbol>
+							</term>
 						</term>
 					</expression>
 					<symbol> ; </symbol>
@@ -50,15 +52,17 @@
 						<term>
 							<identifier> game </identifier>
 							<symbol> . </symbol>
-							<identifier> run </identifier>
-							<symbol> ( </symbol>
-							<expressionList>
-								<expression>
-									<term>
-									</term>
-								</expression>
-							</expressionList>
-							<symbol> ) </symbol>
+							<term>
+								<identifier> run </identifier>
+								<symbol> ( </symbol>
+								<expressionList>
+									<expression>
+										<term>
+										</term>
+									</expression>
+								</expressionList>
+								<symbol> ) </symbol>
+							</term>
 						</term>
 					</expression>
 					<symbol> ; </symbol>
@@ -69,15 +73,17 @@
 						<term>
 							<identifier> game </identifier>
 							<symbol> . </symbol>
-							<identifier> dispose </identifier>
-							<symbol> ( </symbol>
-							<expressionList>
-								<expression>
-									<term>
-									</term>
-								</expression>
-							</expressionList>
-							<symbol> ) </symbol>
+							<term>
+								<identifier> dispose </identifier>
+								<symbol> ( </symbol>
+								<expressionList>
+									<expression>
+										<term>
+										</term>
+									</expression>
+								</expressionList>
+								<symbol> ) </symbol>
+							</term>
 						</term>
 					</expression>
 					<symbol> ; </symbol>

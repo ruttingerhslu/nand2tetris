@@ -1,16 +1,12 @@
-push VAR 0
-push VAR 0
+call .new 0
+call .run 0
+call .dispose 0
+push CONSTANT "string constant"
 push CONSTANT 1
-push VAR 3
 push CONSTANT 2
-push VAR 0
-push VAR 1
 neg
 None
-push VAR 1
 push CONSTANT 2
 neg
 &
-push VAR 0
-push VAR 1
 or
