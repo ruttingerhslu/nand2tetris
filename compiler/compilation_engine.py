@@ -32,6 +32,8 @@ class CompilationEngine:
 
         self._tab_count = 0
         self._symbol_tables = deque()
+        self._class_table = SymbolTable()
+        self._method_table = SymbolTable()
 
         self.compileClass()
 
@@ -71,8 +73,6 @@ class CompilationEngine:
             return []
     
     def compileClass(self):
-        # new symbol table for current class
-        self._symbol_tables.append(SymbolTable())
         self.printXMLTag('<class>')
         self._tab_count += 1
         self.process('class')
@@ -81,14 +81,12 @@ class CompilationEngine:
         while self.tokenizer.keyWord() in ['static', 'field']:
             self.compileClassVarDec()
         while self.tokenizer.keyWord() in ['constructor', 'function', 'method']:
-            # new symbol table for current method
-            self._symbol_tables.append(SymbolTable())
             self.compileSubroutineDec()
-            self._symbol_tables.pop()
+            self._method_table.reset()
         self.process('}')
         self._tab_count -= 1
         self.printXMLTag('</class>')
-        self._symbol_tables.pop()
+        self._class_table.reset()
 
     def compileClassVarDec(self):
         self.printXMLTag('<classVarDec>')
@@ -99,12 +97,12 @@ class CompilationEngine:
         self.process(self.get_types())
         idName = self.tokenizer.identifier()
         self.process(self.tokenizer.identifier())
-        self._symbol_tables[-1].define(idName, idType, idKind)
+        self._class_table.define(idName, idType, idKind)
         while self.tokenizer.symbol() == ',':
             self.process(',')
             idName = self.tokenizer.identifier()
             self.process(self.tokenizer.identifier())
-            self._symbol_tables[-1].define(idName, idType, idKind)
+            self._class_talbe.define(idName, idType, idKind)
         self.process(';')
         self._tab_count -= 1
         self.printXMLTag('</classVarDec>')
@@ -133,14 +131,14 @@ class CompilationEngine:
         self.process(self.get_types())
         idName = self.tokenizer.identifier()
         self.process(self.tokenizer.identifier())
-        self._symbol_tables[-1].define(idName, idType, 'ARG')
+        self._method_table.define(idName, idType, 'ARG')
         while self.tokenizer.symbol() == ',':
             self.process(',')
             idType = self.tokenizer.keyWord() or self.tokenizer.identifier()
             self.process(self.get_types())
             idName = self.tokenizer.identifier()
             self.process(self.tokenizer.identifier())
-            self._symbol_tables[-1].define(idName, idType, 'ARG')
+            self._method_table.define(idName, idType, 'ARG')
         self._tab_count -= 1
         self.printXMLTag('</parameterList>')
 
@@ -163,12 +161,12 @@ class CompilationEngine:
         self.process(self.get_types())
         idName = self.tokenizer.identifier()
         self.process(self.tokenizer.identifier())
-        self._symbol_tables[-1].define(idName, idType, 'VAR')
+        self._method_table.define(idName, idType, 'VAR')
         while self.tokenizer.symbol() == ',':
             self.process(',')
             idName = self.tokenizer.identifier()
             self.process(self.tokenizer.identifier())
-            self._symbol_tables[-1].define(idName, idType, 'VAR')
+            self._method_table.define(idName, idType, 'VAR')
         self.process(';')
         self._tab_count -= 1
         self.printXMLTag('</varDec>')
