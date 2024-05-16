@@ -1,6 +1,7 @@
 import json
+from typing import Tuple
 
-type Kind = tuple['STATIC', 'FIELD', 'ARG', 'VAR']
+Kind = Tuple['STATIC', 'FIELD', 'ARG', 'VAR']
 
 class SymbolTable():
     def __init__(self):

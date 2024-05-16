@@ -1,6 +1,8 @@
-type PushSegment = tuple('CONSTANT', 'ARGUMENT', 'LOCAL', 'STATIC', 'THIS', 'THAT', 'POINTER', 'TEMP')
-type PopSegment = tuple('ARGUMENT', 'LOCAL', 'STATIC', 'THIS', 'THAT', 'POINTER', 'TEMP')
-type Command = tuple('add', 'sub', 'neg', 'eq', 'gt', 'lt', 'and', 'or', 'not')
+from typing import Tuple, Literal
+
+PushSegment = Tuple[Literal['CONSTANT'], Literal['ARGUMENT'], Literal['LOCAL'], Literal['STATIC'], Literal['THIS'], Literal['THAT'], Literal['POINTER'], Literal['TEMP']]
+PopSegment = Tuple[Literal['ARGUMENT'], Literal['LOCAL'], Literal['STATIC'], Literal['THIS'], Literal['THAT'], Literal['POINTER'], Literal['TEMP']]
+Command = Tuple[Literal['add'], Literal['sub'], Literal['neg'], Literal['eq'], Literal['gt'], Literal['lt'], Literal['and'], Literal['or'], Literal['not']]
 
 class VMWriter:
     def __init__(self, vm_file):
@@ -10,7 +12,7 @@ class VMWriter:
         self._file.write(f'push {segment} {index}\n')
 
     def writePop(self, segment: PopSegment, index: int):
-        self._file.write(f'push {segment.lower()} {index}\n')
+        self._file.write(f'pop {segment} {index}\n')
 
     def writeArithmetic(self, command: Command):
         self._file.write(f'{command}\n')

@@ -35,7 +35,9 @@ class CompilationEngine:
         self._class_table = SymbolTable()
         self._method_table = SymbolTable()
         self._last_token = ''
+        
         self._method_class = ''
+        self._curr_class = ''
 
         self.compileClass()
 
@@ -78,6 +80,7 @@ class CompilationEngine:
         self.printXMLTag('<class>')
         self._tab_count += 1
         self.process('class')
+        self._curr_class = self.tokenizer.identifier()
         self.process(self.tokenizer.identifier())
         self.process('{')
         while self.tokenizer.keyWord() in ['static', 'field']:
@@ -116,12 +119,14 @@ class CompilationEngine:
         types = self.get_types()
         types.append('void')
         self.process(types)
+        funcName = self.tokenizer.identifier()
         self.process(self.tokenizer.identifier())
         self.process('(')
+        nVars = 0
         if self.tokenizer.tokenType() in ['IDENTIFIER', 'KEYWORD']:
-            self.compileParameterList()
-            hasParameters = True
+            nVars = self.compileParameterList()
         self.process(')')
+        self.vm_writer.writeFunction(self._getFunctionName(funcName), nVars)
         self.compileSubroutineBody()
         self._tab_count -= 1
         self.printXMLTag('</subroutineDec>')
@@ -129,12 +134,16 @@ class CompilationEngine:
     def compileParameterList(self):
         self.printXMLTag('<parameterList>')
         self._tab_count += 1
+        count = 0
+        if not self.tokenizer.symbol() == ')':
+            count += 1
         idType = self.tokenizer.keyWord() or self.tokenizer.identifier()
         self.process(self.get_types())
         idName = self.tokenizer.identifier()
         self.process(self.tokenizer.identifier())
         self._method_table.define(idName, idType, 'ARG')
         while self.tokenizer.symbol() == ',':
+            count += 1
             self.process(',')
             idType = self.tokenizer.keyWord() or self.tokenizer.identifier()
             self.process(self.get_types())
@@ -143,6 +152,7 @@ class CompilationEngine:
             self._method_table.define(idName, idType, 'ARG')
         self._tab_count -= 1
         self.printXMLTag('</parameterList>')
+        return count
 
     def compileSubroutineBody(self):
         self.printXMLTag('<subroutineBody>')
@@ -195,6 +205,7 @@ class CompilationEngine:
         self.printXMLTag('<letStatement>')
         self._tab_count += 1
         self.process('let')
+        varName = self.tokenizer.identifier()
         self.process(self.tokenizer.identifier())
         if self.tokenizer.symbol() == '[':
             self.process('[')
@@ -202,6 +213,7 @@ class CompilationEngine:
             self.process(']')
         self.process('=')
         self.compileExpression()
+        self.vm_writer.writePop(self._typeOf(varName), self._indexOf(varName))
         self.process(';')
         self._tab_count -= 1
         self.printXMLTag('</letStatement>')
@@ -213,9 +225,14 @@ class CompilationEngine:
         self.process('(')
         self.compileExpression()
         self.process(')')
+        self.vm_writer.writeArithmetic('not')
+        self.vm_writer.writeIf('L1')
         self.process('{')
+        self.vm_writer.writeLabel('L1')
         self.compileStatements()
+        self.vm_writer.writeGoto('L2')
         self.process('}')
+        self.vm_writer.writeLabel('L2')
         if self.tokenizer.keyWord() == 'else':
             self.process('else')
             self.process('{')
@@ -229,11 +246,16 @@ class CompilationEngine:
         self._tab_count += 1
         self.process('while')
         self.process('(')
+        self.vm_writer.writeLabel('L1')
         self.compileExpression()
+        self.vm_writer.writeArithmetic('not')
+        self.vm_writer.writeIf('L2')
         self.process(')')
         self.process('{')
         self.compileStatements()
+        self.vm_writer.writeGoto('L1')
         self.process('}')
+        self.vm_writer.writeLabel('L2')
         self._tab_count -= 1
         self.printXMLTag('</whileStatement>')
 
@@ -242,6 +264,7 @@ class CompilationEngine:
         self._tab_count += 1
         self.process('do')
         self.compileExpression()
+        self.vm_writer.writePop('temp', 0)
         self.process(';')
         self._tab_count -= 1
         self.printXMLTag('</doStatement>')
@@ -252,6 +275,9 @@ class CompilationEngine:
         self.process('return')
         if self.tokenizer.symbol() != ';':
             self.compileExpression()
+        else:
+            self.vm_writer.writePush('constant', 0)
+        self.vm_writer.writeReturn()
         self.process(';')
         self._tab_count -= 1
         self.printXMLTag('</returnStatement>')
@@ -273,10 +299,10 @@ class CompilationEngine:
         self._tab_count += 1
         match self.tokenizer.tokenType():
             case 'INT_CONST':
-                self.vm_writer.writePush('CONSTANT', self.tokenizer.intVal())
+                self.vm_writer.writePush('constant', self.tokenizer.intVal())
                 self.process(self.tokenizer.intVal())
             case 'STRING_CONST':
-                self.vm_writer.writePush('CONSTANT', self.tokenizer.stringVal())
+                self.vm_writer.writePush('constant', self.tokenizer.stringVal())
                 self.process(self.tokenizer.stringVal())
             case 'KEYWORD':
                 if self.tokenizer.keyWord() in ['true', 'false', 'null', 'this']:
@@ -299,12 +325,16 @@ class CompilationEngine:
                             self.process(']')
                         case '(':
                             # push method
-                            className = self._typeOf(identifier)
                             self.process('(')
                             nArgs = self.compileExpressionList()
                             self.process(')')
-                            self.vm_writer.writeCall(className + '.' + identifier, nArgs)
+                            self.vm_writer.writeCall(self._getFunctionName(identifier), nArgs)
+                            self._method_class = ''
                         case '.':
+                            if self._typeOf(identifier):
+                                self._method_class = self._typeOf(identifier)
+                            else:
+                                self._method_class = identifier
                             self.process('.')
                             self.compileTerm()
 
@@ -358,3 +388,9 @@ class CompilationEngine:
             if i > -1:
                 return i
         return ''
+
+    def _getFunctionName(self, identifier):
+        if self._method_class:
+            return self._method_class + '.' + identifier
+        elif self._curr_class:
+            return self._curr_class + '.' + identifier
