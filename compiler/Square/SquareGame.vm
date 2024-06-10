@@ -3,9 +3,9 @@ push constant 0
 push constant 0
 push constant 30
 call Square.new 3
-pop Square 0
+push local 0
 push constant 0
-pop int 1
+push local 1
 return
 function SquareGame.dispose 0
 call Square.dispose 0
@@ -57,7 +57,7 @@ pop temp 0
 push constant 0
 return
 function SquareGame.run 0
-pop boolean 1
+push local 1
 label L1
 not
 not
@@ -68,7 +68,7 @@ eq
 not
 if-goto L2
 call Keyboard.keyPressed 0
-pop char 0
+push local 0
 call SquareGame.moveSquare 0
 pop temp 0
 goto L1
@@ -78,7 +78,7 @@ eq
 not
 if-goto L1
 label L1
-pop boolean 1
+push local 1
 goto L2
 label L2
 push constant 90
@@ -105,7 +105,7 @@ not
 if-goto L1
 label L1
 push constant 1
-pop int 1
+push local 1
 goto L2
 label L2
 push constant 133
@@ -114,7 +114,7 @@ not
 if-goto L1
 label L1
 push constant 2
-pop int 1
+push local 1
 goto L2
 label L2
 push constant 130
@@ -123,7 +123,7 @@ not
 if-goto L1
 label L1
 push constant 3
-pop int 1
+push local 1
 goto L2
 label L2
 push constant 132
@@ -132,7 +132,7 @@ not
 if-goto L1
 label L1
 push constant 4
-pop int 1
+push local 1
 goto L2
 label L2
 label L1
@@ -142,7 +142,7 @@ not
 not
 if-goto L2
 call Keyboard.keyPressed 0
-pop char 0
+push local 0
 call SquareGame.moveSquare 0
 pop temp 0
 goto L1

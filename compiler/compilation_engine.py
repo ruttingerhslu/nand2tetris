@@ -213,7 +213,7 @@ class CompilationEngine:
             self.process(']')
         self.process('=')
         self.compileExpression()
-        self.vm_writer.writePop(self._typeOf(varName), self._indexOf(varName))
+        self.vm_writer.writePush('local', self._indexOf(varName))
         self.process(';')
         self._tab_count -= 1
         self.printXMLTag('</letStatement>')
@@ -313,9 +313,9 @@ class CompilationEngine:
             case 'IDENTIFIER':
                 identifier = self.tokenizer.identifier()
                 self.process(identifier)
-                # push if var
-                if self._kindOf(self.tokenizer.identifier()) == 'VAR':
-                    self.vm_writer.writePush(self._kindOf(identifier), self._indexOf(identifier))
+                # push if arg
+                if self._kindOf(identifier) == 'ARG':
+                    self.vm_writer.writePush('argument', self._indexOf(identifier))
 
                 if self.tokenizer.tokenType() == 'SYMBOL':
                     match self.tokenizer.symbol():
