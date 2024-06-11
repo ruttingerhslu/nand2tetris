@@ -30,7 +30,7 @@ class JackCompiler:
         return files
 
     def tokenize(self):
-        compEngine = CompilationEngine(self._read_file, self._write_file)
+        CompilationEngine(self._read_file, self._write_file)
 
 if __name__ == '__main__':
     jack_path = sys.argv[1]

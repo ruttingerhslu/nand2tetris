@@ -25,7 +25,7 @@ class CompilationEngine:
         self._write_file = open(write_file, 'w')
 
         vm_file = read_file[:read_file.rfind('.jack')] + '.vm'
-        self.vm_writer = VMWriter(vm_file)
+        self.vm_writer = VMWriter('./output/' + vm_file)
 
         self.tokenizer = JackTokenizer(read_file)
         self._curr_token = self.tokenizer.advance()
@@ -96,20 +96,20 @@ class CompilationEngine:
     def compileClassVarDec(self):
         self.printXMLTag('<classVarDec>')
         self._tab_count += 1
-        idKind = self.tokenizer.keyWord()
+        keyword = self.tokenizer.keyWord()
         self.process(['static', 'field'])
         idType = self.tokenizer.keyWord() or self.tokenizer.identifier()
         self.process(self.get_types())
         idName = self.tokenizer.identifier()
         self.process(self.tokenizer.identifier())
-        self._class_table.define(idName, idType, idKind)
-        self.vm_writer.writePush(self._toSegment(idKind), self._indexOf(idName))
+        self._class_table.define(idName, idType, self._toKind(keyword))
+        # self.vm_writer.writePush(self._toSegment(idKind), self._indexOf(idName))
         while self.tokenizer.symbol() == ',':
             self.process(',')
             idName = self.tokenizer.identifier()
             self.process(self.tokenizer.identifier())
-            self._class_table.define(idName, idType, idKind)
-            self.vm_writer.writePush(self._toSegment(idKind), self._indexOf(idName))
+            self._class_table.define(idName, idType, self._toKind(keyword))
+            # self.vm_writer.writePush(self._toSegment(idKind), self._indexOf(idName))
         self.process(';')
         self._tab_count -= 1
         self.printXMLTag('</classVarDec>')
@@ -143,7 +143,7 @@ class CompilationEngine:
         self.process(self.get_types())
         idName = self.tokenizer.identifier()
         self.process(self.tokenizer.identifier())
-        self._method_table.define(idName, idType, 'ARG')
+        self._method_table.define(idName, idType, 'argument')
         while self.tokenizer.symbol() == ',':
             count += 1
             self.process(',')
@@ -151,7 +151,7 @@ class CompilationEngine:
             self.process(self.get_types())
             idName = self.tokenizer.identifier()
             self.process(self.tokenizer.identifier())
-            self._method_table.define(idName, idType, 'ARG')
+            self._method_table.define(idName, idType, 'argument')
         self._tab_count -= 1
         self.printXMLTag('</parameterList>')
         return count
@@ -175,12 +175,12 @@ class CompilationEngine:
         self.process(self.get_types())
         idName = self.tokenizer.identifier()
         self.process(self.tokenizer.identifier())
-        self._method_table.define(idName, idType, 'VAR')
+        self._method_table.define(idName, idType, 'local')
         while self.tokenizer.symbol() == ',':
             self.process(',')
             idName = self.tokenizer.identifier()
             self.process(self.tokenizer.identifier())
-            self._method_table.define(idName, idType, 'VAR')
+            self._method_table.define(idName, idType, 'local')
         self.process(';')
         self._tab_count -= 1
         self.printXMLTag('</varDec>')
@@ -215,7 +215,7 @@ class CompilationEngine:
             self.process(']')
         self.process('=')
         self.compileExpression()
-        self.vm_writer.writePop('local', self._indexOf(varName))
+        self.vm_writer.writePop(self._kindOf(varName), self._indexOf(varName))
         self.process(';')
         self._tab_count -= 1
         self.printXMLTag('</letStatement>')
@@ -308,6 +308,16 @@ class CompilationEngine:
                 self.process(self.tokenizer.stringVal())
             case 'KEYWORD':
                 if self.tokenizer.keyWord() in ['true', 'false', 'null', 'this']:
+                    match self.tokenizer.keyWord():
+                        case 'true':
+                            self.vm_writer.writePush('constant', 1)
+                            self.vm_writer.writeArithmetic('neg')
+                        case 'false':
+                            self.vm_writer.writePush('constant', 0)
+                        case 'null':
+                            self.vm_writer.writePush('constant', 0)
+                        case 'this':
+                            self.vm_writer.writePush('pointer', 0)
                     self.process(self.tokenizer.keyWord())
                 elif self.tokenizer.keyWord() == 'do':
                     self.process('do')
@@ -338,7 +348,7 @@ class CompilationEngine:
                             self.compileTerm()
                         case _:
                             if self._typeOf(identifier):
-                                self.vm_writer.writePush(self._toSegment(self._kindOf(identifier)), self._indexOf(identifier))
+                                self.vm_writer.writePush(self._kindOf(identifier), self._indexOf(identifier))
 
             case 'SYMBOL':
                 match self.tokenizer.symbol():
@@ -350,8 +360,6 @@ class CompilationEngine:
                         unaryOp = self.tokenizer.symbol()
                         self.process(self.tokenizer.symbol())
                         self.compileTerm()
-                        if self._unary_ops.get(unaryOp):
-                            print(unaryOp)
                         self.vm_writer.writeArithmetic(self._unary_ops.get(unaryOp))
 
         self._tab_count -= 1
@@ -399,9 +407,9 @@ class CompilationEngine:
         elif self._curr_class:
             return self._curr_class + '.' + identifier
 
-    def _toSegment(self, kind):
-        match kind:
-            case 'local' | 'VAR':
+    def _toKind(self, keyword):
+        match keyword:
+            case 'local':
                 return 'local'
             case 'argument' | 'ARG':
                 return 'argument'
@@ -410,4 +418,4 @@ class CompilationEngine:
             case 'field':
                 return 'this'
             case _:
-                print(kind)
+                print(keyword)
