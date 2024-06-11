@@ -1,6 +1,7 @@
+push static 0
 function Main.main 0
 call SquareGame.new 0
-push local 0
+pop local 0
 call SquareGame.run 0
 pop temp 0
 call SquareGame.dispose 0
@@ -12,21 +13,26 @@ not
 if-goto L1
 label L1
 push constant "string constant"
-push local 2
-push local 2
+pop local 2
+pop local 2
 push constant 1
 push constant 2
-push local 3
+pop local 3
 goto L2
 label L2
+push local 0
+push local 1
 neg
 None
-push local 0
+pop local 0
+push local 1
 push constant 2
 neg
-&
+None
+pop local 1
+push local 0
 push local 1
 or
-push local 0
+pop local 0
 push constant 0
 return

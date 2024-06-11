@@ -8,7 +8,7 @@ class CompilationEngine:
     _binary_ops = {
         '+': 'add',
         '-': 'sub',
-        '/': '&',
+        '&': 'and',
         '|': 'or',
         '<': 'lt',
         '>': 'gt',
@@ -103,11 +103,13 @@ class CompilationEngine:
         idName = self.tokenizer.identifier()
         self.process(self.tokenizer.identifier())
         self._class_table.define(idName, idType, idKind)
+        self.vm_writer.writePush(self._toSegment(idKind), self._indexOf(idName))
         while self.tokenizer.symbol() == ',':
             self.process(',')
             idName = self.tokenizer.identifier()
             self.process(self.tokenizer.identifier())
             self._class_table.define(idName, idType, idKind)
+            self.vm_writer.writePush(self._toSegment(idKind), self._indexOf(idName))
         self.process(';')
         self._tab_count -= 1
         self.printXMLTag('</classVarDec>')
@@ -213,7 +215,7 @@ class CompilationEngine:
             self.process(']')
         self.process('=')
         self.compileExpression()
-        self.vm_writer.writePush('local', self._indexOf(varName))
+        self.vm_writer.writePop('local', self._indexOf(varName))
         self.process(';')
         self._tab_count -= 1
         self.printXMLTag('</letStatement>')
@@ -313,9 +315,6 @@ class CompilationEngine:
             case 'IDENTIFIER':
                 identifier = self.tokenizer.identifier()
                 self.process(identifier)
-                # push if arg
-                if self._kindOf(identifier) == 'ARG':
-                    self.vm_writer.writePush('argument', self._indexOf(identifier))
 
                 if self.tokenizer.tokenType() == 'SYMBOL':
                     match self.tokenizer.symbol():
@@ -337,6 +336,9 @@ class CompilationEngine:
                                 self._method_class = identifier
                             self.process('.')
                             self.compileTerm()
+                        case _:
+                            if self._typeOf(identifier):
+                                self.vm_writer.writePush(self._toSegment(self._kindOf(identifier)), self._indexOf(identifier))
 
             case 'SYMBOL':
                 match self.tokenizer.symbol():
@@ -348,6 +350,8 @@ class CompilationEngine:
                         unaryOp = self.tokenizer.symbol()
                         self.process(self.tokenizer.symbol())
                         self.compileTerm()
+                        if self._unary_ops.get(unaryOp):
+                            print(unaryOp)
                         self.vm_writer.writeArithmetic(self._unary_ops.get(unaryOp))
 
         self._tab_count -= 1
@@ -394,3 +398,16 @@ class CompilationEngine:
             return self._method_class + '.' + identifier
         elif self._curr_class:
             return self._curr_class + '.' + identifier
+
+    def _toSegment(self, kind):
+        match kind:
+            case 'local' | 'VAR':
+                return 'local'
+            case 'argument' | 'ARG':
+                return 'argument'
+            case 'static':
+                return 'static'
+            case 'field':
+                return 'this'
+            case _:
+                print(kind)

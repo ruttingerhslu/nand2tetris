@@ -1,11 +1,13 @@
+push this 0
+push this 1
 function SquareGame.new 0
 push constant 0
 push constant 0
 push constant 30
 call Square.new 3
-push local 0
+pop local 0
 push constant 0
-push local 1
+pop local 1
 return
 function SquareGame.dispose 0
 call Square.dispose 0
@@ -15,6 +17,7 @@ pop temp 0
 push constant 0
 return
 function SquareGame.moveSquare 0
+push this 1
 push constant 1
 eq
 not
@@ -24,6 +27,7 @@ call Square.moveUp 0
 pop temp 0
 goto L2
 label L2
+push this 1
 push constant 2
 eq
 not
@@ -33,6 +37,7 @@ call Square.moveDown 0
 pop temp 0
 goto L2
 label L2
+push this 1
 push constant 3
 eq
 not
@@ -42,6 +47,7 @@ call Square.moveLeft 0
 pop temp 0
 goto L2
 label L2
+push this 1
 push constant 4
 eq
 not
@@ -57,30 +63,34 @@ pop temp 0
 push constant 0
 return
 function SquareGame.run 0
-push local 1
+pop local 1
 label L1
+push local 1
 not
 not
 if-goto L2
 label L1
+push local 0
 push constant 0
 eq
 not
 if-goto L2
 call Keyboard.keyPressed 0
-push local 0
+pop local 0
 call SquareGame.moveSquare 0
 pop temp 0
 goto L1
 label L2
+push local 0
 push constant 81
 eq
 not
 if-goto L1
 label L1
-push local 1
+pop local 1
 goto L2
 label L2
+push local 0
 push constant 90
 eq
 not
@@ -90,6 +100,7 @@ call Square.decSize 0
 pop temp 0
 goto L2
 label L2
+push local 0
 push constant 88
 eq
 not
@@ -99,50 +110,55 @@ call Square.incSize 0
 pop temp 0
 goto L2
 label L2
+push local 0
 push constant 131
 eq
 not
 if-goto L1
 label L1
 push constant 1
-push local 1
+pop local 1
 goto L2
 label L2
+push local 0
 push constant 133
 eq
 not
 if-goto L1
 label L1
 push constant 2
-push local 1
+pop local 1
 goto L2
 label L2
+push local 0
 push constant 130
 eq
 not
 if-goto L1
 label L1
 push constant 3
-push local 1
+pop local 1
 goto L2
 label L2
+push local 0
 push constant 132
 eq
 not
 if-goto L1
 label L1
 push constant 4
-push local 1
+pop local 1
 goto L2
 label L2
 label L1
+push local 0
 push constant 0
 eq
 not
 not
 if-goto L2
 call Keyboard.keyPressed 0
-push local 0
+pop local 0
 call SquareGame.moveSquare 0
 pop temp 0
 goto L1

@@ -1,10 +1,13 @@
+push this 0
+push this 1
+push this 2
 function Square.new 3
 push argument 0
-push local 0
+pop local 0
 push argument 1
-push local 1
+pop local 1
 push argument 2
-push local 2
+pop local 2
 call Square.draw 0
 pop temp 0
 return
@@ -16,7 +19,13 @@ return
 function Square.draw 0
 call Screen.setColor 1
 pop temp 0
+push this 0
+push this 1
+push this 0
+push this 2
 add
+push this 1
+push this 2
 add
 call Screen.drawRectangle 4
 pop temp 0
@@ -25,28 +34,39 @@ return
 function Square.erase 0
 call Screen.setColor 1
 pop temp 0
+push this 0
+push this 1
+push this 0
+push this 2
 add
+push this 1
+push this 2
 add
 call Screen.drawRectangle 4
 pop temp 0
 push constant 0
 return
 function Square.incSize 0
+push this 1
+push this 2
 add
 push constant 254
 lt
+push this 0
+push this 2
 add
 push constant 510
 lt
-None
+and
 not
 if-goto L1
 label L1
 call Square.erase 0
 pop temp 0
+push this 2
 push constant 2
 add
-push local 2
+pop local 2
 call Square.draw 0
 pop temp 0
 goto L2
@@ -54,6 +74,7 @@ label L2
 push constant 0
 return
 function Square.decSize 0
+push this 2
 push constant 2
 gt
 not
@@ -61,9 +82,10 @@ if-goto L1
 label L1
 call Square.erase 0
 pop temp 0
+push this 2
 push constant 2
 sub
-push local 2
+pop local 2
 call Square.draw 0
 pop temp 0
 goto L2
@@ -71,6 +93,7 @@ label L2
 push constant 0
 return
 function Square.moveUp 0
+push this 1
 push constant 1
 gt
 not
@@ -78,19 +101,32 @@ if-goto L1
 label L1
 call Screen.setColor 1
 pop temp 0
+push this 0
+push this 1
+push this 2
 add
 push constant 1
 sub
+push this 0
+push this 2
 add
+push this 1
+push this 2
 add
 call Screen.drawRectangle 4
 pop temp 0
+push this 1
 push constant 2
 sub
-push local 1
+pop local 1
 call Screen.setColor 1
 pop temp 0
+push this 0
+push this 1
+push this 0
+push this 2
 add
+push this 1
 push constant 1
 add
 call Screen.drawRectangle 4
@@ -100,6 +136,8 @@ label L2
 push constant 0
 return
 function Square.moveDown 0
+push this 1
+push this 2
 add
 push constant 254
 lt
@@ -108,20 +146,33 @@ if-goto L1
 label L1
 call Screen.setColor 1
 pop temp 0
+push this 0
+push this 1
+push this 0
+push this 2
 add
+push this 1
 push constant 1
 add
 call Screen.drawRectangle 4
 pop temp 0
+push this 1
 push constant 2
 add
-push local 1
+pop local 1
 call Screen.setColor 1
 pop temp 0
+push this 0
+push this 1
+push this 2
 add
 push constant 1
 sub
+push this 0
+push this 2
 add
+push this 1
+push this 2
 add
 call Screen.drawRectangle 4
 pop temp 0
@@ -130,6 +181,7 @@ label L2
 push constant 0
 return
 function Square.moveLeft 0
+push this 0
 push constant 1
 gt
 not
@@ -137,20 +189,33 @@ if-goto L1
 label L1
 call Screen.setColor 1
 pop temp 0
+push this 0
+push this 2
 add
 push constant 1
 sub
+push this 1
+push this 0
+push this 2
 add
+push this 1
+push this 2
 add
 call Screen.drawRectangle 4
 pop temp 0
+push this 0
 push constant 2
 sub
-push local 0
+pop local 0
 call Screen.setColor 1
 pop temp 0
+push this 0
+push this 1
+push this 0
 push constant 1
 add
+push this 1
+push this 2
 add
 call Screen.drawRectangle 4
 pop temp 0
@@ -159,6 +224,8 @@ label L2
 push constant 0
 return
 function Square.moveRight 0
+push this 0
+push this 2
 add
 push constant 510
 lt
@@ -167,20 +234,33 @@ if-goto L1
 label L1
 call Screen.setColor 1
 pop temp 0
+push this 0
+push this 1
+push this 0
 push constant 1
 add
+push this 1
+push this 2
 add
 call Screen.drawRectangle 4
 pop temp 0
+push this 0
 push constant 2
 add
-push local 0
+pop local 0
 call Screen.setColor 1
 pop temp 0
+push this 0
+push this 2
 add
 push constant 1
 sub
+push this 1
+push this 0
+push this 2
 add
+push this 1
+push this 2
 add
 call Screen.drawRectangle 4
 pop temp 0
