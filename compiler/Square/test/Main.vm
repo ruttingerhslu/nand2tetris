@@ -1,3 +1,42 @@
+function Main.main 0
+call SquareGame.new 0
+pop local 0
+call SquareGame.run 0
+pop temp 0
+call SquareGame.dispose 0
+pop temp 0
+push constant 0
+return
+function Main.more 0
+push constant 0
+not
+if-goto SquareGame.dispose$L1
+push constant 0
+pop local 2
+push constant 0
+pop local 2
+push constant 1
+push constant 2
+pop local 3
+goto SquareGame.dispose$L2
+label SquareGame.dispose$L1
+push local 0
+push local 1
+neg
+None
+pop local 0
+push local 1
+push constant 2
+neg
+None
+pop local 1
+push local 0
+push local 1
+or
+pop local 0
+label SquareGame.dispose$L2
+push constant 0
+return
 function Square.new 3
 push argument 0
 pop this 0
@@ -280,5 +319,177 @@ pop temp 0
 goto Screen.drawRectangle$L2
 label Screen.drawRectangle$L1
 label Screen.drawRectangle$L2
+push constant 0
+return
+function SquareGame.new 0
+push constant 0
+push constant 0
+push constant 30
+call Square.new 3
+pop this 0
+push constant 0
+pop this 1
+push pointer 0
+return
+function SquareGame.dispose 0
+call Square.dispose 0
+pop temp 0
+push pointer 0
+call Memory.deAlloc 1
+pop temp 0
+push constant 0
+return
+function SquareGame.moveSquare 0
+push this 1
+push constant 1
+eq
+not
+if-goto Memory.deAlloc$L1
+call Square.moveUp 0
+pop temp 0
+goto Square.moveUp$L2
+label Square.moveUp$L1
+label Square.moveUp$L2
+push this 1
+push constant 2
+eq
+not
+if-goto Square.moveUp$L1
+call Square.moveDown 0
+pop temp 0
+goto Square.moveDown$L2
+label Square.moveDown$L1
+label Square.moveDown$L2
+push this 1
+push constant 3
+eq
+not
+if-goto Square.moveDown$L1
+call Square.moveLeft 0
+pop temp 0
+goto Square.moveLeft$L2
+label Square.moveLeft$L1
+label Square.moveLeft$L2
+push this 1
+push constant 4
+eq
+not
+if-goto Square.moveLeft$L1
+call Square.moveRight 0
+pop temp 0
+goto Square.moveRight$L2
+label Square.moveRight$L1
+label Square.moveRight$L2
+push constant 5
+call Sys.wait 1
+pop temp 0
+push constant 0
+return
+function SquareGame.run 0
+push constant 0
+pop local 1
+label L1
+push local 1
+not
+not
+if-goto L2
+label L1
+push local 0
+push constant 0
+eq
+not
+if-goto L2
+call Keyboard.keyPressed 0
+pop local 0
+call SquareGame.moveSquare 0
+pop temp 0
+goto L1
+label L2
+push local 0
+push constant 81
+eq
+not
+if-goto SquareGame.moveSquare$L1
+push constant 1
+neg
+pop local 1
+goto SquareGame.moveSquare$L2
+label SquareGame.moveSquare$L1
+label SquareGame.moveSquare$L2
+push local 0
+push constant 90
+eq
+not
+if-goto SquareGame.moveSquare$L1
+call Square.decSize 0
+pop temp 0
+goto Square.decSize$L2
+label Square.decSize$L1
+label Square.decSize$L2
+push local 0
+push constant 88
+eq
+not
+if-goto Square.decSize$L1
+call Square.incSize 0
+pop temp 0
+goto Square.incSize$L2
+label Square.incSize$L1
+label Square.incSize$L2
+push local 0
+push constant 131
+eq
+not
+if-goto Square.incSize$L1
+push constant 1
+pop this 1
+goto Square.incSize$L2
+label Square.incSize$L1
+label Square.incSize$L2
+push local 0
+push constant 133
+eq
+not
+if-goto Square.incSize$L1
+push constant 2
+pop this 1
+goto Square.incSize$L2
+label Square.incSize$L1
+label Square.incSize$L2
+push local 0
+push constant 130
+eq
+not
+if-goto Square.incSize$L1
+push constant 3
+pop this 1
+goto Square.incSize$L2
+label Square.incSize$L1
+label Square.incSize$L2
+push local 0
+push constant 132
+eq
+not
+if-goto Square.incSize$L1
+push constant 4
+pop this 1
+goto Square.incSize$L2
+label Square.incSize$L1
+label Square.incSize$L2
+label L1
+push local 0
+push constant 0
+eq
+not
+not
+if-goto L2
+call Keyboard.keyPressed 0
+pop local 0
+call SquareGame.moveSquare 0
+pop temp 0
+goto L1
+label L2
+goto L1
+label L2
 push constant 0
 return

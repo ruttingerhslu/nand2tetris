@@ -10,17 +10,16 @@ return
 function Main.more 0
 push constant 0
 not
-if-goto L1
-label L1
-push constant "string constant"
+if-goto SquareGame.dispose$L1
+push constant 0
 pop local 2
 push constant 0
 pop local 2
 push constant 1
 push constant 2
 pop local 3
-goto L2
-label L2
+goto SquareGame.dispose$L2
+label SquareGame.dispose$L1
 push local 0
 push local 1
 neg
@@ -35,5 +34,6 @@ push local 0
 push local 1
 or
 pop local 0
+label SquareGame.dispose$L2
 push constant 0
 return

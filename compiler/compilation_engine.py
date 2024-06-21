@@ -39,6 +39,8 @@ class CompilationEngine:
         self._method_class = ''
         self._curr_class = ''
 
+        self._current_function = ''
+
         self.compileClass()
 
     def printXMLToken(self, token):
@@ -228,18 +230,18 @@ class CompilationEngine:
         self.compileExpression()
         self.process(')')
         self.vm_writer.writeArithmetic('not')
-        self.vm_writer.writeIf('L1')
+        self.vm_writer.writeIf(self._current_function + '$L1')
         self.process('{')
-        self.vm_writer.writeLabel('L1')
         self.compileStatements()
-        self.vm_writer.writeGoto('L2')
+        self.vm_writer.writeGoto(self._current_function + '$L2')
         self.process('}')
-        self.vm_writer.writeLabel('L2')
+        self.vm_writer.writeLabel(self._current_function + '$L1')
         if self.tokenizer.keyWord() == 'else':
             self.process('else')
             self.process('{')
             self.compileStatements()
             self.process('}')
+        self.vm_writer.writeLabel(self._current_function + '$L2')
         self._tab_count -= 1
         self.printXMLTag('</ifStatement>')
 
@@ -304,7 +306,7 @@ class CompilationEngine:
                 self.vm_writer.writePush('constant', self.tokenizer.intVal())
                 self.process(self.tokenizer.intVal())
             case 'STRING_CONST':
-                self.vm_writer.writePush('constant', self.tokenizer.stringVal())
+                self.vm_writer.writePush('constant', 0)
                 self.process(self.tokenizer.stringVal())
             case 'KEYWORD':
                 if self.tokenizer.keyWord() in ['true', 'false', 'null', 'this']:
@@ -337,6 +339,7 @@ class CompilationEngine:
                             self.process('(')
                             nArgs = self.compileExpressionList()
                             self.process(')')
+                            self._current_function = self._getFunctionName(identifier)
                             self.vm_writer.writeCall(self._getFunctionName(identifier), nArgs)
                             self._method_class = ''
                         case '.':

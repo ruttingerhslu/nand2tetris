@@ -21,42 +21,42 @@ push this 1
 push constant 1
 eq
 not
-if-goto L1
-label L1
+if-goto Memory.deAlloc$L1
 call Square.moveUp 0
 pop temp 0
-goto L2
-label L2
+goto Square.moveUp$L2
+label Square.moveUp$L1
+label Square.moveUp$L2
 push this 1
 push constant 2
 eq
 not
-if-goto L1
-label L1
+if-goto Square.moveUp$L1
 call Square.moveDown 0
 pop temp 0
-goto L2
-label L2
+goto Square.moveDown$L2
+label Square.moveDown$L1
+label Square.moveDown$L2
 push this 1
 push constant 3
 eq
 not
-if-goto L1
-label L1
+if-goto Square.moveDown$L1
 call Square.moveLeft 0
 pop temp 0
-goto L2
-label L2
+goto Square.moveLeft$L2
+label Square.moveLeft$L1
+label Square.moveLeft$L2
 push this 1
 push constant 4
 eq
 not
-if-goto L1
-label L1
+if-goto Square.moveLeft$L1
 call Square.moveRight 0
 pop temp 0
-goto L2
-label L2
+goto Square.moveRight$L2
+label Square.moveRight$L1
+label Square.moveRight$L2
 push constant 5
 call Sys.wait 1
 pop temp 0
@@ -86,73 +86,73 @@ push local 0
 push constant 81
 eq
 not
-if-goto L1
-label L1
+if-goto SquareGame.moveSquare$L1
 push constant 1
 neg
 pop local 1
-goto L2
-label L2
+goto SquareGame.moveSquare$L2
+label SquareGame.moveSquare$L1
+label SquareGame.moveSquare$L2
 push local 0
 push constant 90
 eq
 not
-if-goto L1
-label L1
+if-goto SquareGame.moveSquare$L1
 call Square.decSize 0
 pop temp 0
-goto L2
-label L2
+goto Square.decSize$L2
+label Square.decSize$L1
+label Square.decSize$L2
 push local 0
 push constant 88
 eq
 not
-if-goto L1
-label L1
+if-goto Square.decSize$L1
 call Square.incSize 0
 pop temp 0
-goto L2
-label L2
+goto Square.incSize$L2
+label Square.incSize$L1
+label Square.incSize$L2
 push local 0
 push constant 131
 eq
 not
-if-goto L1
-label L1
+if-goto Square.incSize$L1
 push constant 1
 pop this 1
-goto L2
-label L2
+goto Square.incSize$L2
+label Square.incSize$L1
+label Square.incSize$L2
 push local 0
 push constant 133
 eq
 not
-if-goto L1
-label L1
+if-goto Square.incSize$L1
 push constant 2
 pop this 1
-goto L2
-label L2
+goto Square.incSize$L2
+label Square.incSize$L1
+label Square.incSize$L2
 push local 0
 push constant 130
 eq
 not
-if-goto L1
-label L1
+if-goto Square.incSize$L1
 push constant 3
 pop this 1
-goto L2
-label L2
+goto Square.incSize$L2
+label Square.incSize$L1
+label Square.incSize$L2
 push local 0
 push constant 132
 eq
 not
-if-goto L1
-label L1
+if-goto Square.incSize$L1
 push constant 4
 pop this 1
-goto L2
-label L2
+goto Square.incSize$L2
+label Square.incSize$L1
+label Square.incSize$L2
 label L1
 push local 0
 push constant 0
